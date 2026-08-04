@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import '../widgets/vault_input.dart';
 import '../widgets/strength_bar.dart';
 import '../widgets/totp_timer.dart';
+import 'password_generator_screen.dart';
 
 /// Add/Edit password screen with sections for credentials and metadata.
 class AddEditPasswordScreen extends StatefulWidget {
@@ -161,6 +162,32 @@ class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
                     obscureText: true,
                     isCode: true,
                     onChanged: _updateStrength,
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        final password = await showModalBottomSheet<String>(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (ctx) => PasswordGeneratorScreen(
+                            onUsePassword: (p) => Navigator.pop(ctx, p),
+                          ),
+                        );
+                        if (password != null && mounted) {
+                          _passwordController.text = password;
+                          _updateStrength(password);
+                        }
+                      },
+                      icon: const Icon(Icons.auto_fix_high, size: 16),
+                      label: const Text('Generate Password'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppTheme.primary,
+                        textStyle: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   StrengthBar(strength: _passwordStrength),

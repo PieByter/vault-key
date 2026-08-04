@@ -8,6 +8,7 @@ import 'screens/unlock_screen.dart';
 import 'screens/vault_home_screen.dart';
 import 'screens/authenticator_screen.dart';
 import 'screens/add_edit_password_screen.dart';
+import 'screens/settings_screen.dart';
 
 void main() {
   runApp(const VaultKeyApp());
@@ -43,7 +44,11 @@ class _AppShellState extends State<AppShell> {
   bool _isNewUser = true;
   int _currentTab = 0;
 
-  final _tabs = const [VaultHomeScreen(), AuthenticatorScreen()];
+  final _tabs = const [
+    VaultHomeScreen(),
+    AuthenticatorScreen(),
+    SettingsScreen(),
+  ];
 
   void _onSplashComplete() {
     setState(() => _phase = _AppPhase.onboarding);
@@ -108,6 +113,11 @@ class _AppShellState extends State<AppShell> {
               icon: Icon(Icons.timer_outlined),
               selectedIcon: Icon(Icons.timer),
               label: 'Auth',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings_outlined),
+              selectedIcon: Icon(Icons.settings),
+              label: 'Settings',
             ),
           ],
         ),
