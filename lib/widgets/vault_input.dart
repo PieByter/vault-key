@@ -50,6 +50,7 @@ class VaultInput extends StatefulWidget {
 }
 
 class _VaultInputState extends State<VaultInput> {
+  late final FocusNode _focusNode = FocusNode();
   bool _isFocused = false;
   late bool _obscure;
 
@@ -57,6 +58,15 @@ class _VaultInputState extends State<VaultInput> {
   void initState() {
     super.initState();
     _obscure = widget.obscureText;
+    _focusNode.addListener(() {
+      if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,7 +81,7 @@ class _VaultInputState extends State<VaultInput> {
         : theme.textTheme.bodyMedium?.copyWith(color: AppTheme.onSurface);
 
     final hintStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: AppTheme.onSurfaceVariant.withOpacity(0.5),
+      color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5),
     );
 
     Widget? prefix;
@@ -100,49 +110,47 @@ class _VaultInputState extends State<VaultInput> {
       suffix = widget.suffixAction;
     }
 
-    return Focus(
-      onFocusChange: (focused) => setState(() => _isFocused = focused),
-      child: TextField(
-        controller: widget.controller,
-        obscureText: _obscure,
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction,
-        onSubmitted: widget.onSubmitted,
-        onChanged: widget.onChanged,
-        readOnly: widget.readOnly,
-        maxLines: widget.maxLines,
-        minLines: widget.minLines,
-        autofocus: widget.autofocus,
-        textAlign: widget.textAlign,
-        style: textStyle,
-        cursorColor: AppTheme.primary,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: AppTheme.surfaceContainer,
-          hintText: widget.hintText,
-          hintStyle: hintStyle,
-          labelText: widget.labelText,
-          labelStyle: theme.textTheme.labelSmall?.copyWith(
-            color: AppTheme.onSurfaceVariant,
-          ),
-          prefixIcon: prefix,
-          suffixIcon: suffix,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppTheme.primary, width: 1),
-          ),
+    return TextField(
+      focusNode: _focusNode,
+      controller: widget.controller,
+      obscureText: _obscure,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      onSubmitted: widget.onSubmitted,
+      onChanged: widget.onChanged,
+      readOnly: widget.readOnly,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      autofocus: widget.autofocus,
+      textAlign: widget.textAlign,
+      style: textStyle,
+      cursorColor: AppTheme.primary,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppTheme.surfaceContainer,
+        hintText: widget.hintText,
+        hintStyle: hintStyle,
+        labelText: widget.labelText,
+        labelStyle: theme.textTheme.labelSmall?.copyWith(
+          color: AppTheme.onSurfaceVariant,
+        ),
+        prefixIcon: prefix,
+        suffixIcon: suffix,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppTheme.primary, width: 1),
         ),
       ),
     );

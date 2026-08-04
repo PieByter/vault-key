@@ -44,10 +44,10 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               decoration: BoxDecoration(
-                color: AppTheme.background.withOpacity(0.95),
+                color: AppTheme.background.withValues(alpha: 0.95),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -66,7 +66,9 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
                         fillColor: AppTheme.surfaceContainer,
                         hintText: 'Search vault...',
                         hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                          color: AppTheme.onSurfaceVariant.withOpacity(0.5),
+                          color: AppTheme.onSurfaceVariant.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                         prefixIcon: const Icon(
                           Icons.search,
@@ -90,7 +92,7 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
                     backgroundImage: const AssetImage(
                       'assets/images/profile.png',
                     ),
-                    onBackgroundImageError: (_, __) {},
+                    onBackgroundImageError: (_, _) {},
                     child: const Icon(
                       Icons.person_outline,
                       size: 20,

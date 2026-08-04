@@ -1,5 +1,6 @@
 # VaultKey — Sliced Design Document
-> Extracted from HTML prototypes for Flutter implementation  
+
+> Extracted from HTML prototypes for Flutter implementation
 > Source: `stitch_vaultkey_secure_password_manager/`
 
 ---
@@ -7,8 +8,9 @@
 ## 1. Design Tokens
 
 ### 1.1 Color Palette (Material 3 Dark)
+
 | Token | Hex | Usage |
-|-------|-----|-------|
+| --- | --- | --- |
 | `background` | `#0e131f` | App scaffold background |
 | `surface` | `#0e131f` | Cards, sheets base |
 | `surface-dim` | `#0e131f` | Dimmed surfaces |
@@ -38,8 +40,9 @@
 | `on-error` | `#690005` | Text on error |
 
 ### 1.2 Typography
+
 | Token | Font | Size | Weight | Line-Height | Letter-Spacing |
-|-------|------|------|--------|-------------|----------------|
+| --- | --- | --- | --- | --- | --- |
 | `headline-lg` | Inter | 32px | 700 | 40px | -0.02em |
 | `headline-lg-mobile` | Inter | 24px | 700 | 32px | -0.01em |
 | `headline-md` | Inter | 20px | 600 | 28px | — |
@@ -49,8 +52,9 @@
 | `code-md` | JetBrains Mono | 14px | 500 | 20px | — |
 
 ### 1.3 Spacing (8px Grid)
+
 | Token | Value |
-|-------|-------|
+| --- | --- |
 | `xs` | 4px |
 | `sm` / `base` | 8px |
 | `md` | 16px |
@@ -61,8 +65,9 @@
 | `margin-tablet` | 32px |
 
 ### 1.4 Shape / Radius
+
 | Token | Value | Usage |
-|-------|-------|-------|
+| --- | --- | --- |
 | `sm` | 4px | Small tags |
 | `DEFAULT` / `md` | 8px | Buttons, inputs, small cards |
 | `lg` | 12px | Cards |
@@ -74,7 +79,7 @@
 ## 2. Screen Inventory
 
 | # | Screen | File | Type | Notes |
-|---|--------|------|------|-------|
+| --- | --- | --- | --- | --- |
 | 1 | **Splash** | `splash_screen/code.html` | Full-screen | Logo + loading bar + "Initializing Secure Enclave" |
 | 2 | **Onboarding** | `onboarding_flow/code.html` | Carousel | 3 slides: Store passwords, Generate strong passwords, 2FA shield |
 | 3 | **Sign Up** | `sign_up_screen/code.html` | Auth form | Email, master password, confirm, strength meter, terms |
@@ -93,6 +98,7 @@
 ## 3. Shared Components
 
 ### 3.1 AppBar (Fixed Header)
+
 - **Height**: 64px (`h-16`)
 - **Background**: `surface/80` + `backdrop-blur-xl`
 - **Shadow**: `0 1px 8px rgba(0,0,0,0.2)`
@@ -101,6 +107,7 @@
 - **Safe area**: `pt-safe` (notch/status bar padding)
 
 ### 3.2 Text Input (Standard)
+
 - **Background**: `surface-container` (`#1a1f2c`)
 - **Border**: none default, `ring-1 ring-primary` on focus
 - **Radius**: `lg` (8px) or `xl` (12px) depending on density
@@ -111,6 +118,7 @@
 - **Placeholder**: `on-surface-variant/50`
 
 ### 3.3 Primary Button (Filled)
+
 - **Background**: `inverse-primary` (`#005ac2`) or `primary-container` (`#4d8eff`)
 - **Text**: White / `on-primary`
 - **Height**: 48–56px
@@ -120,11 +128,13 @@
 - **Icon + Label** layout common
 
 ### 3.4 Secondary Button (Outlined)
+
 - **Border**: 1px `surface-container-highest` or `outline-variant`
 - **Text**: `primary` or `on-surface`
 - **Background**: transparent → `surface-container-high` on hover
 
 ### 3.5 Credential Card
+
 - **Background**: `surface-container`
 - **Radius**: `2xl` (16px) or `xl` (12px)
 - **Shadow**: `shadow-sm shadow-black/20`
@@ -135,6 +145,7 @@
 - **Actions**: Copy (content_copy), More (more_vert)
 
 ### 3.6 Category Chip
+
 - **Active**: `bg-primary text-on-primary` + `shadow-lg shadow-primary/20`
 - **Inactive**: `bg-surface-container text-on-surface-variant` + `shadow-sm shadow-black/10`
 - **Radius**: `xl` (12px)
@@ -142,6 +153,7 @@
 - **Text**: `label-sm`
 
 ### 3.7 Strength Indicator (4-segment bar)
+
 - **Container**: `h-1.5` rounded-full, `bg-surface-container-high`
 - **Segments**: 4 flex children
 - **Colors by strength**:
@@ -152,6 +164,7 @@
 - **Label**: `label-sm` right-aligned, color matches level
 
 ### 3.8 Bottom Sheet
+
 - **Background**: `surface-container-highest`
 - **Top radius**: `rounded-t-3xl` (24px)
 - **Shadow**: `shadow-2xl`
@@ -159,6 +172,7 @@
 - **Padding**: `px-margin-mobile` + `pb-safe`
 
 ### 3.9 Floating Action Button (FAB)
+
 - **Background**: `primary-container` (`#4d8eff`)
 - **Icon**: White, Material Symbols
 - **Size**: 56px
@@ -171,11 +185,13 @@
 ## 4. Per-Screen Breakdown
 
 ### 4.1 Splash Screen
+
 **Layout**: Centered column, full-screen `background`
 
-**Elements**:
+#### Splash Elements
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Background glow | `w-[800px] h-[800px] rounded-full bg-primary/20 blur-[120px] animate-pulse opacity-10` |
 | Logo | 128px (`w-32 h-32`), object-contain, drop-shadow-2xl, `animate-[bounce_3s_ease-in-out_infinite]` |
 | App name | `headline-lg` white, tracking-tight |
@@ -186,30 +202,35 @@
 
 **Animation**: `loading` — translateX + width morph, 2s ease-in-out infinite
 
-**Assets**:
+#### Assets
+
 - Brand logo image (see §6 Assets)
 
 ---
 
 ### 4.2 Onboarding Flow
+
 **Layout**: Full-screen swipeable carousel (3 slides), horizontal scroll snap
 
-**Global chrome**:
+#### Global chrome
+
 - Top-right "Skip" button: `text-on-surface-variant`, hover `bg-surface-bright`, rounded-full
 - Bottom dot indicators + "Get Started" CTA (slide 3)
 
-**Per slide structure**:
+#### Per slide structure
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Icon container | 128px (`w-32 h-32`), `bg-surface-container rounded-2xl`, shadow-xl, border `surface-variant` |
 | Glow behind icon | `absolute inset-0 bg-{color}/20 rounded-full blur-3xl animate-pulse` |
 | Icon | Material Symbols `text-6xl` (`48px`), filled, color = slide accent |
 | Headline | `headline-lg-mobile` `on-background`, centered, tracking-tight |
 | Body | `body-lg` `on-surface-variant`, centered, max-w-xs, leading-relaxed |
 
-**Slide content**:
+#### Slide content
+
 | Slide | Icon | Color | Headline | Body |
-|-------|------|-------|----------|------|
+| --- | --- | --- | --- | --- |
 | 1 | `lock` | `primary` | Store passwords securely | "Your digital fortress. Enterprise-grade encryption..." |
 | 2 | `vpn_key` | `secondary` | Generate strong passwords | "Stop using 'password123'. Instantly create complex..." |
 | 3 | `shield_lock` | `tertiary` | Two-Factor Authentication | "Add an extra layer of security with time-based codes..." |
@@ -217,22 +238,25 @@
 ---
 
 ### 4.3 Sign Up Screen
+
 **Layout**: Centered column, scrollable form
 
-**Elements**:
+#### Sign Up Elements
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Header icon | 64px rounded-2xl, `bg-surface-container`, `shield_lock` `primary` 32px filled + glow |
 | Title | `headline-lg-mobile` `on-background` |
 | Subtitle | `body-md` `on-surface-variant` max-w-[280px] |
-| Email input | Standard input, `mail` icon, placeholder "name@company.com" |
+| Email input | Standard input, `mail` icon, placeholder `"name@company.com"` |
 | Master password | Standard input, `key` icon, `code-md` tracking-wider, visibility toggle, strength bar below |
 | Confirm password | Standard input, `lock_reset` icon, match validation error text |
 | Terms checkbox | "I agree to Terms" + link |
 | CTA | Full-width primary button "Create Account" |
 | Footer | "Already have an account? Sign In" link |
 
-**Interactions**:
+#### Sign Up Interactions
+
 - Password strength: real-time 4-segment bar update
 - Confirm validation: error text `text-error` opacity toggle when mismatch
 - Visibility toggles on both password fields
@@ -240,11 +264,13 @@
 ---
 
 ### 4.4 Log In Screen
+
 **Layout**: Centered column, compact card
 
-**Elements**:
+#### Login Elements
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Brand logo | 96px (`w-24 h-24`) centered, mb-lg |
 | Card container | `bg-surface p-xl rounded-xl shadow-lg border border-surface-variant`, max-w-sm |
 | Title | `headline-lg-mobile` `on-surface` |
@@ -259,15 +285,18 @@
 ---
 
 ### 4.5 Unlock Screen
+
 **Layout**: Centered column, decorative background
 
-**Background effects**:
+#### Background effects
+
 - Radial dot grid: `radial-gradient(circle, primary 1px, transparent 1px)`, 32px size, 20% opacity
 - Orbit rings: 384px and 448px circles, `border-surface-variant`, slow rotation (60s / 90s)
 
-**Elements**:
+#### Unlock Elements
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Hero icon | 96px (`w-24 h-24`) circle, `bg-surface-container-high`, `lock` 48px `primary` filled |
 | Glow | `absolute -inset-4 bg-primary/20 rounded-full blur-2xl`, hover opacity transition |
 | Scan line | `h-1 bg-primary/40 blur-[2px] animate-ping` inside shield |
@@ -283,27 +312,32 @@
 ---
 
 ### 4.6 Vault Home
+
 **Layout**: Main scrollable list with sticky header
 
-**Sticky Search Header**:
+#### Sticky Search Header
+
 - Position: `sticky top-16 z-40`
 - Background: `bg-background/95 backdrop-blur-xl`
 - Shadow: `0 4px 16px rgba(0,0,0,0.2)`
 - Search input: flex-1, `bg-surface-container rounded-xl`, `search` icon, placeholder "Search vault..."
 - Profile avatar: 48px rounded-xl, right side
 
-**Category Chips**:
+#### Category Chips
+
 - Horizontal scroll, `px-margin-mobile py-2`, gap-sm
 - Items: All Items (active), Logins, Cards, Secure Notes, Identity
 - Overflow: `scrollbar-width: none`
 
-**Credential List**:
+#### Credential List
+
 - Sections: "Pinned" + "All Accounts" (or similar)
 - Section header: `label-sm` `on-surface-variant` uppercase tracking-wider
 - Cards: see §3.5 Credential Card
 - Sample entries include: GitHub/Enterprise (code icon, red), Gmail (mail icon, #EA4335), etc.
 
-**FAB**:
+#### FAB
+
 - Position: bottom-right, above safe area
 - Icon: `add` or `plus`
 - Style: see §3.9
@@ -311,9 +345,11 @@
 ---
 
 ### 4.7 Add/Edit Password
+
 **Layout**: Scrollable form, sections grouped
 
-**Sections**:
+#### Sections
+
 1. **Vault Selection & Item Name**
    - Item Name input: `badge` icon, placeholder "e.g. Work Email, Netflix"
    - Vault/Folder picker: button row, `folder` icon (filled, `secondary`), selected value, `expand_more`
@@ -336,20 +372,24 @@
 ---
 
 ### 4.8 Authenticator Tab
+
 **Layout**: List with sticky AppBar
 
-**AppBar**:
+#### AppBar
+
 - Logo (h-8) + "Authenticator" title (`headline-md`)
 - Profile avatar (32px rounded-full)
 
-**Global Timer**:
+#### Global Timer
+
 - 48px circle, `bg-surface-container`
 - SVG circular progress: 36×36 viewBox, stroke-width 3
 - Background track: `surface-variant`
 - Progress: `primary`, animated with CSS `transition-all duration-1000 ease-linear`
 - Center text: 10px `code-md` countdown
 
-**TOTP Entries**:
+#### TOTP Entries
+
 - **High Priority** section: `bg-surface-container rounded-xl`, gradient accent `from-primary/10 to-transparent`
 - **All Accounts** section: standard list
 - Entry layout:
@@ -358,22 +398,26 @@
   - Right: `content_copy` icon, hover opacity transition
   - Bottom: `code-md` `headline-lg` `primary` tracking-[0.2em]
 
-**Interactions**:
+#### Authenticator Interactions
+
 - Tap entry → copy code to clipboard
 - Global timer syncs all entries (30s TOTP window)
 
 ---
 
 ### 4.9 Password Generator
+
 **Layout**: Bottom sheet modal
 
-**Sheet chrome**:
+#### Sheet chrome
+
 - Drag handle: 48×6px `bg-outline-variant rounded-full`
 - Close button: top-right, `close` icon
 
-**Content**:
+#### Content
+
 | Element | Spec |
-|---------|------|
+| --- | --- |
 | Title | `headline-lg-mobile` "Generator" |
 | Password display | `bg-surface-container-lowest rounded-xl p-md pr-14`, `code-md` `headline-md` `primary` tracking-widest, break-all |
 | Hover glow | `bg-primary/5` opacity transition |
@@ -388,33 +432,41 @@
 ---
 
 ### 4.10 QR Scanner
+
 **Layout**: Full-screen camera overlay
 
-**Viewfinder**:
+#### Viewfinder
+
 - Center: 288×288px (`w-72 h-72`) clear area
 - Corners: 32×32px (`w-8 h-8`) `bg-surface-container-highest` with inset shadow in `secondary` (#4edea3)
 - Scan line: `h-1 bg-primary/80 blur-[1px] shadow-[0_0_15px_#adc6ff]`, animates vertically 2s ease-in-out infinite alternate
 
-**Shade overlay**:
+#### Shade overlay
+
 - Top, left, right, bottom: `bg-background/80 backdrop-blur-sm`
 
-**Bottom text**:
+#### Bottom text
+
 - `qr_code_scanner` icon 48px `on-surface-variant`
 - Title: `headline-md` "Scan Authenticator Code"
 - Subtitle: `body-md` `on-surface-variant` centered max-w-[280px]
 
-**Bottom action**:
+#### Bottom action
+
 - "Manual Entry" pill button: `bg-surface-container`, `keyboard` icon, `primary` text, ring-1 `outline-variant/30`
 
-**Background**:
+#### Background
+
 - Simulated camera feed: blurred dark tech image, 40% opacity
 
 ---
 
 ### 4.11 TOTP Timer Animation (Three.js)
+
 **Purpose**: Reusable circular countdown animation for TOTP 30-second window
 
-**Implementation**:
+#### Implementation
+
 - SVG-based (preferred for Flutter) or CustomPainter
 - Circle radius: 15.9155 (for 100 circumference)
 - Circumference: ~100 units
@@ -422,7 +474,8 @@
 - Stroke dashoffset: animated from 100 → 0 over 30s
 - Colors: track = `surface-variant`, progress = `primary`
 
-**Flutter equivalent**:
+#### Flutter equivalent
+
 - `CustomPaint` with `CircularProgressIndicator` or custom `CustomPainter`
 - `AnimationController` 30s linear
 - Update every 100ms for smoothness
@@ -431,7 +484,7 @@
 
 ## 5. Navigation Flow
 
-```
+```text
 [Splash] ──→ [Onboarding] ──→ [Sign Up] ──┐
      │           │              │          │
      │           └────────→ [Log In] ←───┘
@@ -450,6 +503,7 @@
 ```
 
 **Tab structure** (implied):
+
 - Vault (home)
 - Authenticator (TOTP)
 - Generator (tool)
@@ -460,8 +514,9 @@
 ## 6. Asset Inventory
 
 ### 6.1 External Images (require download / replacement)
+
 | Screen | Asset | URL | Usage |
-|--------|-------|-----|-------|
+| --- | --- | --- | --- |
 | Splash | Brand logo | `lh3.googleusercontent.com/aida-public/AB6AXuBlTnSh-...` | Center logo |
 | Login | Brand logo | Same as above | Center logo |
 | Login | User profile | `lh3.googleusercontent.com/aida-public/AB6AXuDBzyaf-...` | Profile avatar |
@@ -474,8 +529,9 @@
 **Recommendation**: Download these and place in `assets/images/` or `assets/brand/`. The Google-hosted URLs are temporary/AI-generated placeholders.
 
 ### 6.2 Material Symbols Icons Used
+
 | Icon Name | Screens | Usage |
-|-----------|---------|-------|
+| --- | --- | --- |
 | `lock` | Splash, Onboarding, Unlock | Security icon |
 | `vpn_key` | Onboarding | Key icon |
 | `shield_lock` | Onboarding, Sign Up | Shield icon |
@@ -512,6 +568,7 @@
 ## 7. Flutter Theme Mapping
 
 ### 7.1 ColorScheme (dark)
+
 ```dart
 ColorScheme.fromSeed(
   seedColor: const Color(0xFFadc6ff),
@@ -542,6 +599,7 @@ ColorScheme.fromSeed(
 ```
 
 ### 7.2 TextTheme
+
 ```dart
 TextTheme(
   headlineLarge: TextStyle(fontFamily: 'Inter', fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.02 * 32, height: 40/32),
@@ -551,9 +609,11 @@ TextTheme(
   labelSmall: TextStyle(fontFamily: 'Inter', fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.05 * 12, height: 16/12),
 )
 ```
+
 Add `fontFamily: 'JetBrainsMono'` for `code-md` styles (passwords, TOTP codes).
 
 ### 7.3 ShapeTheme
+
 ```dart
 ShapeTheme(
   // Map to component defaults

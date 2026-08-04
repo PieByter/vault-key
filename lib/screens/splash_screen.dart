@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
               height: 800,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.primary.withOpacity(0.2),
+                color: AppTheme.primary.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 128,
                   child: Image.asset(
                     'assets/brand/logo.png',
-                    errorBuilder: (_, __, ___) => const Icon(
+                    errorBuilder: (_, _, _) => const Icon(
                       Icons.shield_outlined,
                       size: 80,
                       color: AppTheme.primary,
@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen>
                 Text(
                   'Enterprise Security',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.onSurfaceVariant.withOpacity(0.7),
+                    color: AppTheme.onSurfaceVariant.withValues(alpha: 0.7),
                     letterSpacing: 4,
                   ),
                 ),
@@ -124,14 +124,14 @@ class _SplashScreenState extends State<SplashScreen>
                       height: 16,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppTheme.onSurfaceVariant.withOpacity(0.5),
+                        color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Initializing Secure Enclave',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppTheme.onSurfaceVariant.withOpacity(0.5),
+                        color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5),
                         letterSpacing: 2,
                       ),
                     ),

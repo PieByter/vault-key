@@ -147,7 +147,7 @@ class AppTheme {
         borderSide: const BorderSide(color: error, width: 1),
       ),
       hintStyle: textTheme.bodyMedium?.copyWith(
-        color: onSurfaceVariant.withOpacity(0.5),
+        color: onSurfaceVariant.withValues(alpha: 0.5),
       ),
       labelStyle: textTheme.labelSmall?.copyWith(color: onSurfaceVariant),
       prefixIconColor: onSurfaceVariant,
@@ -169,11 +169,11 @@ class AppTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            shadowColor: primary.withOpacity(0.15),
+            shadowColor: primary.withValues(alpha: 0.15),
           ).copyWith(
             overlayColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.pressed)) {
-                return Colors.white.withOpacity(0.1);
+                return Colors.white.withValues(alpha: 0.1);
               }
               return null;
             }),
@@ -196,7 +196,7 @@ class AppTheme {
             ),
           ).copyWith(
             overlayColor: WidgetStateProperty.all(
-              surfaceContainerHigh.withOpacity(0.3),
+              surfaceContainerHigh.withValues(alpha: 0.3),
             ),
           ),
     );
@@ -213,8 +213,8 @@ class AppTheme {
     );
   }
 
-  static CardTheme _cardTheme() {
-    return CardTheme(
+  static CardThemeData _cardTheme() {
+    return CardThemeData(
       color: surfaceContainer,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -262,7 +262,7 @@ class AppTheme {
 
   static AppBarTheme _appBarTheme(TextTheme textTheme) {
     return AppBarTheme(
-      backgroundColor: surface.withOpacity(0.8),
+      backgroundColor: surface.withValues(alpha: 0.8),
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
@@ -319,7 +319,7 @@ class AppTheme {
         inverseSurface: inverseSurface,
         inversePrimary: inversePrimary,
         shadow: Colors.black,
-        scrim: Colors.black.withOpacity(0.6),
+        scrim: Color(0x99000000),
       ),
       scaffoldBackgroundColor: background,
       textTheme: textTheme,
@@ -338,8 +338,8 @@ class AppTheme {
         space: 1,
       ),
       iconTheme: const IconThemeData(color: onSurfaceVariant),
-      splashColor: primary.withOpacity(0.1),
-      highlightColor: primary.withOpacity(0.05),
+      splashColor: primary.withValues(alpha: 0.1),
+      highlightColor: primary.withValues(alpha: 0.05),
     );
   }
 }

@@ -145,7 +145,7 @@ class _TOTPEntry extends StatelessWidget {
             gradient: isHighPriority
                 ? LinearGradient(
                     colors: [
-                      AppTheme.primary.withOpacity(0.1),
+                      AppTheme.primary.withValues(alpha: 0.1),
                       Colors.transparent,
                     ],
                     begin: Alignment.centerRight,
@@ -192,7 +192,7 @@ class _TOTPEntry extends StatelessWidget {
                   Icon(
                     Icons.content_copy_outlined,
                     size: 20,
-                    color: AppTheme.onSurfaceVariant.withOpacity(0.5),
+                    color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5),
                   ),
                 ],
               ),

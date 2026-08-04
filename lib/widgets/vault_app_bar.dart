@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
@@ -32,17 +34,17 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
     return ClipRRect(
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.surface.withOpacity(0.8),
+          color: AppTheme.surface.withValues(alpha: 0.8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 1),
             ),
           ],
         ),
         child: BackdropFilter(
-          filter: const ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -54,7 +56,7 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Image.asset(
                       'assets/brand/logo.png',
                       height: 32,
-                      errorBuilder: (_, __, ___) => const Icon(
+                      errorBuilder: (_, _, _) => const Icon(
                         Icons.shield_outlined,
                         color: AppTheme.primary,
                         size: 28,
@@ -82,7 +84,7 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
                       backgroundImage: const AssetImage(
                         'assets/images/profile.png',
                       ),
-                      onBackgroundImageError: (_, __) {},
+                      onBackgroundImageError: (_, _) {},
                       child: const Icon(
                         Icons.person_outline,
                         size: 18,

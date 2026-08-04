@@ -4,7 +4,16 @@ import '../widgets/vault_input.dart';
 
 /// Log In screen with email, master password, biometric, and forgot password.
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({
+    super.key,
+    this.onLogin,
+    this.onSignUp,
+    this.onForgotPassword,
+  });
+
+  final VoidCallback? onLogin;
+  final VoidCallback? onSignUp;
+  final VoidCallback? onForgotPassword;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -42,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 96,
                     child: Image.asset(
                       'assets/brand/logo.png',
-                      errorBuilder: (_, __, ___) => const Icon(
+                      errorBuilder: (_, _, _) => const Icon(
                         Icons.shield_outlined,
                         size: 64,
                         color: AppTheme.primary,
@@ -60,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: Border.all(color: AppTheme.surfaceVariant),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.3),
                           blurRadius: 16,
                           offset: const Offset(0, 4),
                         ),
@@ -112,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: widget.onForgotPassword,
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
@@ -142,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Primary CTA
                         ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: widget.onLogin,
                           icon: const Icon(Icons.login, size: 20),
                           label: const Text('Log In'),
                         ),
@@ -194,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: widget.onSignUp,
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
