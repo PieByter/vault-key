@@ -1,0 +1,179 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script></head><body class="bg-background text-on-background font-body-md"><main class="relative w-full min-h-screen"><div class="flex flex-col w-full h-full justify-center items-center px-4 py-8 relative overflow-hidden">
+<!-- Subtle Background Grid/Pattern -->
+<div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(circle at 50% 50%, var(--tw-colors-primary) 1px, transparent 1px); background-size: 32px 32px;"></div>
+<!-- Decorative Orbit Rings -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-surface-variant rounded-full animate-[spin_60s_linear_infinite] pointer-events-none"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] border border-surface-variant/50 rounded-full animate-[spin_90s_linear_infinite_reverse] pointer-events-none"></div>
+<!-- Main Content Container -->
+<div class="z-10 flex flex-col items-center w-full max-w-sm mx-auto">
+<!-- Hero Icon (Shield/Lock) -->
+<div class="relative mb-8 group cursor-pointer" id="unlock-hero-icon">
+<!-- Glow Effect -->
+<div class="absolute -inset-4 bg-primary/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<!-- Shield Base -->
+<div class="w-24 h-24 bg-surface-container-high rounded-full flex items-center justify-center relative overflow-hidden shadow-[0_0_40px_rgba(15,20,32,0.8)] border border-surface-variant z-10 transition-transform duration-300 ease-out group-hover:scale-105">
+<!-- Rotating scan line inside shield -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary/40 blur-[2px] animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite] origin-top"></div>
+<span class="material-symbols-outlined text-[48px] text-primary transition-all duration-300 group-hover:text-primary-fixed" style="font-variation-settings: 'FILL' 1;">
+          lock
+        </span>
+</div>
+<!-- Unlocking Animation Particles (JS controlled) -->
+<div class="absolute inset-0 pointer-events-none" id="unlock-particles"></div>
+</div>
+<!-- Title & Subtitle -->
+<h1 class="font-headline-lg-mobile text-on-background mb-2 text-center tracking-tight">Vault Locked</h1>
+<p class="font-body-md text-on-surface-variant mb-10 text-center">Enter your Master Password to proceed.</p>
+<!-- Form -->
+<form class="w-full flex flex-col gap-4" onsubmit="event.preventDefault(); animateUnlock();">
+<!-- Password Input Group -->
+<div class="relative w-full group">
+<input autocomplete="current-password" class="w-full bg-surface-container-low text-on-surface font-code-md text-center tracking-[0.3em] py-4 px-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 border border-surface-variant transition-all duration-300 placeholder:tracking-normal placeholder:font-body-md placeholder:text-on-surface-variant/50" id="master-password" placeholder="Master Password" type="password"/>
+<!-- Icon: Key (Left) -->
+<div class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none transition-colors duration-300 group-focus-within:text-primary">
+<span class="material-symbols-outlined text-[20px]">password</span>
+</div>
+<!-- Icon: Reveal Toggle (Right) -->
+<button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[20px]" id="visibility-icon">visibility_off</span>
+</button>
+</div>
+<!-- Main Unlock Button -->
+<button class="w-full bg-primary hover:bg-primary-fixed text-on-primary font-headline-md py-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-[0.98] shadow-[0_4px_20px_rgba(173,198,255,0.15)] overflow-hidden relative" id="unlock-btn" type="submit">
+<span class="z-10 flex items-center gap-2">
+          Unlock Vault
+          <span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</span>
+<!-- Shine effect -->
+<div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_2.5s_infinite]"></div>
+</button>
+</form>
+<!-- Alternative Methods -->
+<div class="w-full flex flex-col items-center mt-12 gap-6 opacity-0 animate-[fadeInUp_0.8s_ease-out_0.3s_forwards]">
+<div class="flex items-center gap-4 w-full px-8">
+<div class="h-px bg-surface-variant flex-1"></div>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest text-[10px]">Or</span>
+<div class="h-px bg-surface-variant flex-1"></div>
+</div>
+<!-- Biometric Button -->
+<button class="group flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-surface-container-low transition-colors duration-300 border border-transparent hover:border-surface-variant" onclick="triggerBiometric()" type="button">
+<div class="w-14 h-14 bg-surface-container-highest rounded-full flex items-center justify-center text-primary group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(173,198,255,0.2)] transition-all duration-400 ease-out relative">
+<!-- Fingerprint scan line -->
+<div class="absolute top-2 w-8 h-0.5 bg-secondary-fixed/80 blur-[1px] opacity-0 group-hover:opacity-100 group-hover:animate-[scan_2s_ease-in-out_infinite]"></div>
+<span class="material-symbols-outlined text-[32px]">fingerprint</span>
+</div>
+<span class="font-label-sm text-on-surface-variant group-hover:text-primary transition-colors">Biometric Unlock</span>
+</button>
+<!-- PIN Link -->
+<button class="font-body-md text-on-surface-variant hover:text-on-surface underline decoration-on-surface-variant/30 underline-offset-4 transition-colors duration-200 mt-2">
+        Use PIN alternative
+      </button>
+</div>
+</div>
+<style>
+    @keyframes scan {
+      0%, 100% { transform: translateY(0); opacity: 0; }
+      10%, 90% { opacity: 1; }
+      50% { transform: translateY(40px); }
+    }
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes unlockSuccess {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); background-color: var(--tw-colors-secondary-container); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+  </style>
+<script>
+    function togglePassword() {
+      const input = document.getElementById('master-password');
+      const icon = document.getElementById('visibility-icon');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility';
+        input.classList.remove('tracking-[0.3em]');
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility_off';
+        input.classList.add('tracking-[0.3em]');
+      }
+    }
+
+    function animateUnlock() {
+      const btn = document.getElementById('unlock-btn');
+      const iconContainer = document.getElementById('unlock-hero-icon').firstElementChild.nextElementSibling;
+      const icon = iconContainer.querySelector('.material-symbols-outlined');
+      
+      // Button Loading State
+      btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Authenticating...`;
+      btn.classList.add('opacity-80', 'cursor-not-allowed');
+      
+      // Simulate network/decryption delay
+      setTimeout(() => {
+        // Change icon to unlocked
+        icon.textContent = 'lock_open';
+        icon.classList.remove('text-primary');
+        icon.classList.add('text-secondary-fixed');
+        
+        // Success animation on shield container
+        iconContainer.style.animation = 'unlockSuccess 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+        
+        // Change button to success state
+        btn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Vault Decrypted`;
+        btn.classList.remove('bg-primary', 'hover:bg-primary-fixed', 'text-on-primary');
+        btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+        
+        // Add particle burst
+        createParticles();
+
+        // Optional: Trigger page transition after animation
+        // setTimeout(() => window.location.href = '/vault', 1000);
+      }, 1500);
+    }
+
+    function createParticles() {
+      const container = document.getElementById('unlock-particles');
+      for(let i=0; i<12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-secondary-fixed opacity-0';
+        
+        // Random trajectory
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 40 + Math.random() * 60;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        
+        particle.style.transform = `translate(-50%, -50%)`;
+        particle.animate([
+          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+        ], {
+          duration: 600 + Math.random() * 400,
+          easing: 'cubic-bezier(0,0,0.2,1)',
+          fill: 'forwards'
+        });
+        
+        container.appendChild(particle);
+      }
+    }
+
+    function triggerBiometric() {
+      const bioIcon = document.querySelector('.group .material-symbols-outlined');
+      bioIcon.classList.add('text-secondary-fixed', 'scale-110');
+      
+      // Haptic feedback simulation if supported
+      if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+      
+      setTimeout(() => {
+        animateUnlock(); // Trigger main unlock flow
+      }, 800);
+    }
+  </script>
+</div></main></body></html>

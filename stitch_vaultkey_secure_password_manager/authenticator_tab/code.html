@@ -1,0 +1,175 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script><style>@layer base { body { overscroll-behavior-y: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; } [data-active="true"] .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-background text-on-background font-body-md"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.2)]"><div class="h-16 px-margin-mobile flex items-center justify-between"><div class="flex items-center gap-md"><img alt="VaultKey Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlTnSh-XWFPGNV7ppXs8SbiEC5eTvrW79LVtLU0Imv2PGAMnWeNzrFZFvFie0qMo5cng1wqMa6XqjU-rm_Ue664CYH-ppB-bYqiHBmM83chmb62cPDu7joVB6OYo31-_Idb86xQtxmvrv7J-ZKg95G7f50DZLBkm6zO24SCLXa12G-IBZ0romEHFL98-njsVVq8s_pI1_VaCETkXUcP-j2iNhkv01OftVn_7tOsAv4yPRug--rwjwyaw"/><span class="font-headline-md text-headline-md text-on-surface">Authenticator</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBzyafRBvIZeL83unfqH14NqNkTA_8l9Kv07h3DtKWPs5w_CMtKlXDRA5aKO_xSM1XZAeuFDLHkRkwGIMoNJh62IfUsZupLa49R0wATB8f90BnBpFxZzTPMuE5g6gtWGvIXvTx7FKhGzklEsJpsGobJbK_gnCtnPUybgFtUwp3vcspwjSoZk1A2_-EzAPHD-WMz8kkDZhTzRjubKxaSs7W8GRV2faXIr3531KaEvBDuDNctY8py25qFQ"/></div></header><main class="relative w-full pt-16 pb-24 bg-background min-h-screen"><div class="flex flex-col w-full h-full relative font-body-md bg-surface text-on-surface">
+<div class="px-margin-mobile pt-md pb-lg">
+<div class="flex items-center justify-between mb-xl">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Authenticator</h2>
+<p class="text-on-surface-variant font-body-md mt-xs">One-time passwords for your accounts</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center relative">
+<svg class="w-6 h-6 text-primary transform -rotate-90" id="global-timer" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-primary transition-all duration-1000 ease-linear" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" id="global-timer-path" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+</svg>
+<span class="absolute text-[10px] font-code-md text-on-surface" id="global-timer-text">30</span>
+</div>
+</div>
+<!-- Pinned Important Item -->
+<div class="mb-lg">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-md uppercase tracking-wider">High Priority</h3>
+<div class="bg-surface-container rounded-xl p-md relative overflow-hidden group active:bg-surface-container-high transition-colors cursor-pointer" onclick="copyCode('812 490', this)">
+<div class="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">work</span>
+</div>
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">Acme Corp VPN</h4>
+<p class="font-body-md text-[13px] text-on-surface-variant">admin@acmecorp.com</p>
+</div>
+</div>
+<div class="text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">content_copy</span>
+</div>
+</div>
+<div class="mt-md flex justify-between items-end relative z-10">
+<div class="font-code-md text-headline-lg text-primary tracking-[0.2em] font-medium" id="code-1">812 490</div>
+</div>
+</div>
+</div>
+<!-- Standard Items -->
+<div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-md uppercase tracking-wider">All Accounts</h3>
+<div class="flex flex-col gap-sm">
+<!-- Entry 1 -->
+<div class="bg-surface-container rounded-xl p-md flex flex-col gap-sm active:bg-surface-container-high transition-colors cursor-pointer" onclick="copyCode('458 912', this)">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-[#5865F2]/20 flex items-center justify-center text-[#5865F2]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">forum</span>
+</div>
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">Discord</h4>
+<p class="font-body-md text-[13px] text-on-surface-variant">gamer123</p>
+</div>
+</div>
+</div>
+<div class="font-code-md text-headline-lg-mobile text-on-surface tracking-[0.2em]" id="code-2">458 912</div>
+</div>
+<!-- Entry 2 -->
+<div class="bg-surface-container rounded-xl p-md flex flex-col gap-sm active:bg-surface-container-high transition-colors cursor-pointer" onclick="copyCode('019 744', this)">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-[#EA4335]/20 flex items-center justify-center text-[#EA4335]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
+</div>
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">Google</h4>
+<p class="font-body-md text-[13px] text-on-surface-variant">john.doe@gmail.com</p>
+</div>
+</div>
+</div>
+<div class="font-code-md text-headline-lg-mobile text-on-surface tracking-[0.2em]" id="code-3">019 744</div>
+</div>
+<!-- Entry 3 -->
+<div class="bg-surface-container rounded-xl p-md flex flex-col gap-sm active:bg-surface-container-high transition-colors cursor-pointer" onclick="copyCode('992 104', this)">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud</span>
+</div>
+<div>
+<h4 class="font-headline-md text-[16px] text-on-surface">AWS Console</h4>
+<p class="font-body-md text-[13px] text-on-surface-variant">root</p>
+</div>
+</div>
+</div>
+<div class="font-code-md text-headline-lg-mobile text-on-surface tracking-[0.2em]" id="code-4">992 104</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden, just for layout robustness) -->
+<div class="hidden flex-col items-center justify-center p-xl text-center flex-1">
+<div class="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center mb-lg">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant">qr_code_scanner</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">No Authenticators</h3>
+<p class="font-body-md text-on-surface-variant max-w-[250px]">Add your first TOTP account to start generating secure codes.</p>
+</div>
+<!-- FAB -->
+<button class="fixed bottom-[88px] right-margin-mobile w-14 h-14 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-lg active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined">add</span>
+</button>
+<!-- Toast Notification -->
+<div class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-surface-container-highest text-on-surface px-md py-sm rounded-full font-body-md text-sm shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-xs z-50" id="toast">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+    Code copied to clipboard
+  </div>
+</div>
+<script>
+  let secondsRemaining = 30;
+  
+  function updateTimer() {
+    const textEl = document.getElementById('global-timer-text');
+    const pathEl = document.getElementById('global-timer-path');
+    
+    if(!textEl || !pathEl) return;
+
+    secondsRemaining--;
+    if (secondsRemaining < 0) {
+      secondsRemaining = 30;
+      // Simulate code refresh visually
+      document.querySelectorAll('[id^="code-"]').forEach(el => {
+        el.style.opacity = '0.5';
+        setTimeout(() => el.style.opacity = '1', 150);
+      });
+    }
+
+    textEl.textContent = secondsRemaining;
+    
+    // Calculate dasharray for ring (0 to 100)
+    const percentage = (secondsRemaining / 30) * 100;
+    pathEl.setAttribute('stroke-dasharray', `${percentage}, 100`);
+
+    // Color shift on low time
+    if (secondsRemaining <= 5) {
+      pathEl.classList.remove('text-primary');
+      pathEl.classList.add('text-error');
+      textEl.classList.add('text-error');
+    } else {
+      pathEl.classList.add('text-primary');
+      pathEl.classList.remove('text-error');
+      textEl.classList.remove('text-error');
+    }
+  }
+
+  setInterval(updateTimer, 1000);
+  updateTimer(); // Initial call
+
+  let toastTimeout;
+  function copyCode(code, element) {
+    // Visual feedback on card
+    element.classList.add('scale-[0.98]', 'bg-surface-container-highest');
+    setTimeout(() => {
+      element.classList.remove('scale-[0.98]', 'bg-surface-container-highest');
+    }, 150);
+
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.classList.remove('opacity-0');
+    toast.classList.add('opacity-100');
+    
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('opacity-100');
+      toast.classList.add('opacity-0');
+    }, 2000);
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 bg-surface-container/90 backdrop-blur-xl pb-safe shadow-[0_-1px_8px_rgba(0,0,0,0.2)]" data-active-classes="text-primary"><div class="flex justify-between items-center h-16 px-lg"><a class="flex flex-col items-center justify-center gap-xs w-16 text-on-surface-variant transition-colors" data-path="vault" href="#"><span class="material-symbols-outlined">vpn_key</span><span class="font-label-sm text-label-sm">Vault</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-xs w-16 transition-colors text-primary" data-path="authenticator" href="#"><span class="material-symbols-outlined">shield</span><span class="font-label-sm text-label-sm">Auth</span></a><a class="flex flex-col items-center justify-center gap-xs w-16 text-on-surface-variant transition-colors" data-path="generator" href="#"><span class="material-symbols-outlined">casino</span><span class="font-label-sm text-label-sm">Gen</span></a><a class="flex flex-col items-center justify-center gap-xs w-16 text-on-surface-variant transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined">settings</span><span class="font-label-sm text-label-sm">Settings</span></a></div></nav></body></html>

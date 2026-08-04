@@ -1,0 +1,192 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script></head><body class="bg-background text-on-background font-body-md"><main class="relative w-full min-h-screen"><div class="flex flex-col w-full h-full p-margin-mobile gap-lg">
+<div class="flex flex-col items-center justify-center pt-xl pb-lg gap-sm">
+<div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center mb-sm relative">
+<div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+<span class="material-symbols-outlined text-primary text-[32px] relative z-10" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background text-center">Create your fortress</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-[280px]">Set up your VaultKey account to secure your digital life.</p>
+</div>
+<form class="flex flex-col gap-md flex-grow" id="signup-form">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-xs" for="email">EMAIL ADDRESS</label>
+<div class="relative flex items-center bg-surface-container rounded-lg focus-within:ring-1 focus-within:ring-primary transition-all duration-200 group">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-sm group-focus-within:text-primary transition-colors duration-200">mail</span>
+<input class="w-full bg-transparent border-none text-on-surface font-body-md py-sm pl-[40px] pr-sm focus:outline-none focus:ring-0 placeholder:text-on-surface-variant/50 h-[48px] rounded-lg" id="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center px-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="password">MASTER PASSWORD</label>
+</div>
+<div class="relative flex items-center bg-surface-container rounded-lg focus-within:ring-1 focus-within:ring-primary transition-all duration-200 group">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-sm group-focus-within:text-primary transition-colors duration-200">key</span>
+<input class="w-full bg-transparent border-none text-on-surface font-code-md tracking-wider py-sm pl-[40px] pr-[40px] focus:outline-none focus:ring-0 placeholder:text-on-surface-variant/50 placeholder:font-body-md placeholder:tracking-normal h-[48px] rounded-lg" id="password" placeholder="Minimum 12 characters" required="" type="password"/>
+<button class="absolute right-sm text-on-surface-variant hover:text-on-surface p-xs rounded-full transition-colors flex items-center justify-center h-8 w-8" id="toggle-password" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<div class="flex gap-xs mt-1 h-1.5 w-full rounded-full overflow-hidden bg-surface-container-high px-xs" id="strength-container">
+<div class="h-full flex-1 rounded-full transition-all duration-300 bg-surface-variant" id="strength-1"></div>
+<div class="h-full flex-1 rounded-full transition-all duration-300 bg-surface-variant" id="strength-2"></div>
+<div class="h-full flex-1 rounded-full transition-all duration-300 bg-surface-variant" id="strength-3"></div>
+<div class="h-full flex-1 rounded-full transition-all duration-300 bg-surface-variant" id="strength-4"></div>
+</div>
+<div class="flex justify-between items-center px-xs mt-0.5">
+<span class="font-label-sm text-[10px] text-on-surface-variant" id="strength-text">Use a mix of letters, numbers, and symbols</span>
+</div>
+</div>
+<div class="flex flex-col gap-xs mt-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-xs" for="confirm-password">CONFIRM MASTER PASSWORD</label>
+<div class="relative flex items-center bg-surface-container rounded-lg focus-within:ring-1 focus-within:ring-primary transition-all duration-200 group">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-sm group-focus-within:text-primary transition-colors duration-200">lock_reset</span>
+<input class="w-full bg-transparent border-none text-on-surface font-code-md tracking-wider py-sm pl-[40px] pr-[40px] focus:outline-none focus:ring-0 placeholder:text-on-surface-variant/50 placeholder:font-body-md placeholder:tracking-normal h-[48px] rounded-lg" id="confirm-password" placeholder="Retype your master password" required="" type="password"/>
+<button class="absolute right-sm text-on-surface-variant hover:text-on-surface p-xs rounded-full transition-colors flex items-center justify-center h-8 w-8" id="toggle-confirm" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<span class="font-label-sm text-[10px] text-error px-xs opacity-0 transition-opacity" id="match-error">Passwords do not match</span>
+</div>
+<div class="mt-auto pt-lg flex flex-col gap-md pb-xl">
+<label class="flex items-start gap-sm p-sm rounded-lg bg-tertiary-container/10 cursor-pointer group hover:bg-tertiary-container/20 transition-colors">
+<div class="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
+<input class="peer appearance-none w-5 h-5 rounded-[4px] bg-surface-container-high ring-1 ring-tertiary-container/30 checked:bg-tertiary checked:ring-tertiary transition-all" id="understand-warning" required="" type="checkbox"/>
+<span class="material-symbols-outlined text-on-tertiary absolute pointer-events-none opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all duration-200 text-[16px] font-bold">check</span>
+</div>
+<div class="flex flex-col gap-xs flex-1">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-tertiary text-[16px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold uppercase tracking-wider">Critical Warning</span>
+</div>
+<span class="font-body-md text-sm text-on-surface-variant leading-tight">I understand that VaultKey cannot recover my Master Password. If I lose it, I lose access to my vault permanently.</span>
+</div>
+</label>
+<button class="w-full h-12 bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm rounded-lg flex items-center justify-center gap-sm transition-all duration-300 disabled:opacity-50 relative overflow-hidden group" disabled="" id="submit-btn" type="submit">
+<div class="absolute inset-0 bg-primary translate-y-full transition-transform duration-300 ease-out group-[.is-ready]:translate-y-0"></div>
+<span class="relative z-10 flex items-center gap-xs group-[.is-ready]:text-on-primary">
+<span class="material-symbols-outlined text-[18px]">add_moderator</span>
+                    CREATE ACCOUNT
+                </span>
+</button>
+<div class="flex justify-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">ALREADY HAVE AN ACCOUNT? LOG IN</a>
+</div>
+</div>
+</form>
+</div>
+<script>
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm-password');
+    const togglePassword = document.getElementById('toggle-password');
+    const toggleConfirm = document.getElementById('toggle-confirm');
+    const warningCheck = document.getElementById('understand-warning');
+    const submitBtn = document.getElementById('submit-btn');
+    const matchError = document.getElementById('match-error');
+    
+    const s1 = document.getElementById('strength-1');
+    const s2 = document.getElementById('strength-2');
+    const s3 = document.getElementById('strength-3');
+    const s4 = document.getElementById('strength-4');
+    const strengthText = document.getElementById('strength-text');
+
+    function setupToggle(btn, input) {
+        btn.addEventListener('click', () => {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            btn.querySelector('span').textContent = type === 'password' ? 'visibility_off' : 'visibility';
+            btn.querySelector('span').style.fontVariationSettings = type === 'password' ? "'FILL' 0" : "'FILL' 1";
+        });
+    }
+
+    setupToggle(togglePassword, passwordInput);
+    setupToggle(toggleConfirm, confirmInput);
+
+    function calculateStrength(pw) {
+        let score = 0;
+        if (!pw) return 0;
+        if (pw.length > 8) score += 1;
+        if (pw.length > 12) score += 1;
+        if (/[A-Z]/.test(pw) && /[0-9]/.test(pw)) score += 1;
+        if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+        return Math.min(4, score);
+    }
+
+    function updateStrengthUI(score) {
+        const colors = [
+            'bg-surface-variant', // 0
+            'bg-error',           // 1
+            'bg-tertiary',        // 2
+            'bg-secondary',       // 3
+            'bg-secondary'        // 4
+        ];
+        
+        const texts = [
+            'Use a mix of letters, numbers, and symbols',
+            'Weak - Add more characters',
+            'Fair - Add numbers or symbols',
+            'Good - Add uppercase letters',
+            'Strong - Ready to secure'
+        ];
+
+        const textColors = [
+            'text-on-surface-variant',
+            'text-error',
+            'text-tertiary',
+            'text-secondary',
+            'text-secondary'
+        ];
+
+        [s1, s2, s3, s4].forEach((el, idx) => {
+            el.className = `h-full flex-1 rounded-full transition-all duration-300 ${idx < score ? colors[score] : 'bg-surface-variant'}`;
+            if (idx < score) {
+                el.style.transform = 'scaleY(1)';
+            } else if (score > 0) {
+                el.style.transform = 'scaleY(0.4)';
+            } else {
+                 el.style.transform = 'scaleY(1)';
+            }
+        });
+
+        strengthText.textContent = texts[score];
+        strengthText.className = `font-label-sm text-[10px] transition-colors ${textColors[score]}`;
+    }
+
+    function validateForm() {
+        const pw = passwordInput.value;
+        const confirm = confirmInput.value;
+        const checked = warningCheck.checked;
+        const score = calculateStrength(pw);
+        
+        const isMatch = pw === confirm && pw !== '';
+        
+        if (confirm !== '' && !isMatch) {
+            matchError.style.opacity = '1';
+        } else {
+            matchError.style.opacity = '0';
+        }
+
+        const isReady = score >= 3 && isMatch && checked;
+        
+        if (isReady) {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.classList.add('is-ready');
+            submitBtn.classList.add('cursor-pointer');
+            submitBtn.classList.add('shadow-lg', 'shadow-primary/20');
+        } else {
+            submitBtn.setAttribute('disabled', 'true');
+            submitBtn.classList.remove('is-ready');
+            submitBtn.classList.remove('cursor-pointer');
+            submitBtn.classList.remove('shadow-lg', 'shadow-primary/20');
+        }
+    }
+
+    passwordInput.addEventListener('input', (e) => {
+        updateStrengthUI(calculateStrength(e.target.value));
+        validateForm();
+    });
+    
+    confirmInput.addEventListener('input', validateForm);
+    warningCheck.addEventListener('change', validateForm);
+
+</script></main></body></html>

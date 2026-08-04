@@ -1,0 +1,122 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script></head><body class="bg-background text-on-background font-body-md"><main class="relative w-full min-h-screen"><div class="flex flex-col w-full h-[600px] max-h-[80vh] relative bg-background rounded-3xl overflow-hidden shadow-2xl ring-1 ring-surface-variant">
+<!-- Top Bar -->
+<div class="absolute top-0 w-full flex justify-end p-4 z-20">
+<button class="text-on-surface-variant text-body-md font-body-md font-medium px-4 py-2 rounded-full hover:bg-surface-bright transition-colors">
+      Skip
+    </button>
+</div>
+<!-- Swipeable Slides Container -->
+<div class="flex w-full h-full transition-transform duration-500 ease-in-out" id="onboarding-slider" style="transform: translateX(0%);">
+<!-- Slide 1 -->
+<div class="w-full flex-shrink-0 flex flex-col items-center justify-center p-8">
+<div class="relative w-48 h-48 mb-12 flex items-center justify-center">
+<!-- Glowing background effect -->
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+<div class="relative z-10 w-32 h-32 bg-surface-container rounded-2xl shadow-xl flex items-center justify-center border border-surface-variant">
+<span class="material-symbols-outlined text-6xl text-primary" style="font-variation-settings: 'FILL' 1;">
+            lock
+          </span>
+</div>
+</div>
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-background mb-4 text-center tracking-tight">Store passwords securely</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant text-center max-w-xs leading-relaxed">
+        Your digital fortress. Enterprise-grade encryption keeps your sensitive data locked away from prying eyes.
+      </p>
+</div>
+<!-- Slide 2 -->
+<div class="w-full flex-shrink-0 flex flex-col items-center justify-center p-8">
+<div class="relative w-48 h-48 mb-12 flex items-center justify-center">
+<!-- Glowing background effect -->
+<div class="absolute inset-0 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-75"></div>
+<div class="relative z-10 w-32 h-32 bg-surface-container rounded-2xl shadow-xl flex items-center justify-center border border-surface-variant">
+<span class="material-symbols-outlined text-6xl text-secondary" style="font-variation-settings: 'FILL' 1;">
+            vpn_key
+          </span>
+</div>
+</div>
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-background mb-4 text-center tracking-tight">Generate strong passwords</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant text-center max-w-xs leading-relaxed">
+        Stop using 'password123'. Instantly create complex, unguessable keys for every account.
+      </p>
+</div>
+<!-- Slide 3 -->
+<div class="w-full flex-shrink-0 flex flex-col items-center justify-center p-8">
+<div class="relative w-48 h-48 mb-12 flex items-center justify-center">
+<!-- Glowing background effect -->
+<div class="absolute inset-0 bg-tertiary/20 rounded-full blur-3xl animate-pulse delay-150"></div>
+<div class="relative z-10 w-32 h-32 bg-surface-container rounded-2xl shadow-xl flex items-center justify-center border border-surface-variant">
+<span class="material-symbols-outlined text-6xl text-tertiary" style="font-variation-settings: 'FILL' 1;">
+            shield_lock
+          </span>
+</div>
+</div>
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-background mb-4 text-center tracking-tight">Built-in TOTP authenticator</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant text-center max-w-xs leading-relaxed">
+        Protect your accounts with two-factor authentication, integrated directly into your vault.
+      </p>
+</div>
+</div>
+<!-- Bottom Navigation & Indicators -->
+<div class="absolute bottom-0 w-full p-8 flex flex-col items-center gap-8 bg-gradient-to-t from-background via-background/80 to-transparent">
+<!-- Dots -->
+<div class="flex gap-3" id="dot-indicators">
+<button class="w-2.5 h-2.5 rounded-full bg-primary transition-all duration-300 w-8" data-index="0"></button>
+<button class="w-2.5 h-2.5 rounded-full bg-surface-variant transition-all duration-300" data-index="1"></button>
+<button class="w-2.5 h-2.5 rounded-full bg-surface-variant transition-all duration-300" data-index="2"></button>
+</div>
+<!-- Action Button -->
+<button class="w-full max-w-xs bg-primary text-on-primary text-body-lg font-body-lg font-semibold py-4 rounded-xl shadow-lg hover:bg-primary-fixed-dim transition-colors active:scale-[0.98]" id="next-btn">
+      Continue
+    </button>
+</div>
+</div>
+<script>
+  (function() {
+    let currentSlide = 0;
+    const totalSlides = 3;
+    const slider = document.getElementById('onboarding-slider');
+    const dots = document.querySelectorAll('#dot-indicators button');
+    const nextBtn = document.getElementById('next-btn');
+    
+    function updateSlider() {
+      // Move slider
+      slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+      
+      // Update dots
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.remove('bg-surface-variant');
+          dot.classList.add('bg-primary', 'w-8');
+        } else {
+          dot.classList.remove('bg-primary', 'w-8');
+          dot.classList.add('bg-surface-variant');
+        }
+      });
+      
+      // Update button text
+      if (currentSlide === totalSlides - 1) {
+        nextBtn.textContent = 'Get Started';
+      } else {
+        nextBtn.textContent = 'Continue';
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlider();
+      } else {
+        // Handle completion
+        console.log("Onboarding complete");
+      }
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentSlide = index;
+        updateSlider();
+      });
+    });
+  })();
+</script></main></body></html>

@@ -1,0 +1,162 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script><style>@layer base { body { overscroll-behavior-y: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; } } ::-webkit-scrollbar { display: none; }</style></head><body class="bg-background text-on-background font-body-md"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.2)]"><div class="h-16 px-margin-mobile flex items-center gap-md"><button class="w-10 h-10 flex items-center justify-center text-on-surface-variant" onclick="history.back()"><span class="material-symbols-outlined">arrow_back_ios_new</span></button><div class="flex items-center gap-sm"><img alt="VaultKey" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlTnSh-XWFPGNV7ppXs8SbiEC5eTvrW79LVtLU0Imv2PGAMnWeNzrFZFvFie0qMo5cng1wqMa6XqjU-rm_Ue664CYH-ppB-bYqiHBmM83chmb62cPDu7joVB6OYo31-_Idb86xQtxmvrv7J-ZKg95G7f50DZLBkm6zO24SCLXa12G-IBZ0romEHFL98-njsVVq8s_pI1_VaCETkXUcP-j2iNhkv01OftVn_7tOsAv4yPRug--rwjwyaw"/><span class="font-headline-md text-headline-md text-on-surface">Credential Details</span></div></div></header><main class="relative w-full pt-16 bg-background min-h-screen px-margin-mobile"><div class="flex flex-col w-full pb-safe">
+<div class="flex-1 flex flex-col gap-6 pt-4 pb-24">
+<!-- Vault Selection & Item Name -->
+<section class="flex flex-col gap-4">
+<div class="flex flex-col gap-1 px-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider" for="item_name">Item Name</label>
+<div class="relative flex items-center bg-surface-container rounded-lg focus-within:ring-1 focus-within:ring-primary transition-all duration-200">
+<span class="material-symbols-outlined absolute left-4 text-on-surface-variant opacity-70">badge</span>
+<input class="w-full h-14 bg-transparent border-none focus:outline-none pl-12 pr-4 text-body-lg text-on-surface placeholder:text-on-surface-variant/50 font-medium" id="item_name" placeholder="e.g. Work Email, Netflix" type="text" value="Acme Corp Dashboard"/>
+</div>
+</div>
+<div class="flex flex-col gap-1 px-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider" for="vault_folder">Vault / Folder</label>
+<button class="w-full h-14 bg-surface-container rounded-lg flex items-center justify-between px-4 hover:bg-surface-container-high transition-colors text-left focus:outline-none focus:ring-1 focus:ring-primary" id="vault_folder">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="text-body-md text-on-surface font-medium">Work Credentials</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Core Credentials Box -->
+<section class="bg-surface-container rounded-xl flex flex-col relative overflow-hidden">
+<!-- Subtle internal gradient indicating secure area -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+<!-- Website URL -->
+<div class="relative flex flex-col group p-4 border-b border-surface-container-highest/50">
+<label class="font-label-sm text-label-sm text-primary mb-2" for="url">Website URL</label>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-bright flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 18px;">language</span>
+</div>
+<input class="w-full bg-transparent border-none focus:outline-none text-body-lg font-code-md text-on-surface placeholder:text-on-surface-variant/50" id="url" type="url" value="https://dashboard.acmecorp.com"/>
+<button aria-label="Open URL" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-bright text-on-surface-variant transition-colors active:scale-95 shrink-0">
+<span class="material-symbols-outlined">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Username -->
+<div class="relative flex flex-col group p-4 border-b border-surface-container-highest/50">
+<label class="font-label-sm text-label-sm text-on-surface-variant mb-2" for="username">Username / Email</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant w-8 text-center shrink-0">person</span>
+<input class="w-full bg-transparent border-none focus:outline-none text-body-lg font-medium text-on-surface placeholder:text-on-surface-variant/50" id="username" placeholder="Enter username" type="text" value="j.doe@acmecorp.com"/>
+<button aria-label="Copy Username" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-bright text-on-surface-variant transition-colors active:scale-95 shrink-0">
+<span class="material-symbols-outlined" style="font-size: 20px;">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Password -->
+<div class="relative flex flex-col group p-4">
+<label class="font-label-sm text-label-sm text-on-surface-variant mb-2" for="password">Password</label>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant w-8 text-center shrink-0" style="font-variation-settings: 'FILL' 1;">key</span>
+<input class="w-full bg-transparent border-none focus:outline-none text-body-lg font-code-md text-on-surface placeholder:text-on-surface-variant/50 tracking-widest" id="password" type="password" value="xk9$#mP2q!Lz"/>
+<div class="flex items-center shrink-0">
+<button aria-label="Toggle Password Visibility" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-bright text-on-surface-variant transition-colors active:scale-95" id="togglePasswordVisibility">
+<span class="material-symbols-outlined" id="visibilityIcon" style="font-size: 20px;">visibility_off</span>
+</button>
+<button aria-label="Copy Password" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-bright text-on-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined" style="font-size: 20px;">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Password Strength Indicator (simulated for edit state) -->
+<div class="mt-4 flex flex-col gap-2 w-full pr-12 pl-11">
+<div class="flex gap-1 h-1.5 w-full rounded-full overflow-hidden bg-surface-bright">
+<div class="h-full bg-secondary w-full"></div>
+<div class="h-full bg-secondary w-full"></div>
+<div class="h-full bg-secondary w-full"></div>
+<div class="h-full bg-secondary w-full"></div>
+</div>
+<span class="text-label-sm font-label-sm text-secondary text-right">Excellent</span>
+</div>
+</div>
+</section>
+<!-- Generate Password CTA -->
+<button class="w-full relative overflow-hidden bg-surface-container-high hover:bg-surface-bright rounded-xl p-4 flex items-center gap-4 transition-all duration-300 group active:scale-[0.98]">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">casino</span>
+</div>
+<div class="flex flex-col items-start flex-1 text-left">
+<span class="text-body-md font-medium text-on-surface">Generate Strong Password</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Create a new secure string</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+<!-- Hover sheen effect -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+</button>
+<!-- Notes -->
+<section class="flex flex-col gap-1 px-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider" for="notes">Secure Notes</label>
+<div class="relative bg-surface-container rounded-lg focus-within:ring-1 focus-within:ring-primary transition-all duration-200">
+<textarea class="w-full bg-transparent border-none focus:outline-none p-4 text-body-md text-on-surface placeholder:text-on-surface-variant/50 resize-none" id="notes" placeholder="Add PINs, security questions, or other sensitive details..." rows="4"></textarea>
+</div>
+</section>
+</div>
+<!-- Fixed Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-xl border-t border-surface-container-highest pb-safe px-margin-mobile pt-4 z-40">
+<div class="flex flex-row items-center gap-4 w-full pb-4">
+<!-- Secondary Action (Delete for edit state) -->
+<button aria-label="Delete Entry" class="h-14 px-6 rounded-lg bg-error-container text-on-error-container font-medium text-body-lg flex items-center justify-center gap-2 hover:bg-error transition-colors active:scale-95 shrink-0">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+<!-- Primary Action -->
+<button class="h-14 flex-1 rounded-lg bg-primary text-on-primary font-medium text-body-lg hover:bg-primary-fixed-dim transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 relative overflow-hidden group">
+<span class="relative z-10">Save Changes</span>
+<span class="material-symbols-outlined relative z-10" style="font-size: 20px;">check</span>
+<!-- Button highlight effect -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+</button>
+</div>
+</div>
+<!-- Spacer to ensure scroll clears fixed bottom bar -->
+<div class="h-6"></div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('togglePasswordVisibility');
+    const passwordInput = document.getElementById('password');
+    const visibilityIcon = document.getElementById('visibilityIcon');
+
+    if(toggleBtn && passwordInput && visibilityIcon) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Add a small tactile animation class
+        visibilityIcon.classList.add('scale-75', 'opacity-50');
+        setTimeout(() => {
+          visibilityIcon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+          visibilityIcon.classList.remove('scale-75', 'opacity-50');
+        }, 150);
+      });
+    }
+    
+    // Add simple ripple effect to copy buttons for interaction delight
+    const copyBtns = document.querySelectorAll('[aria-label*="Copy"]');
+    copyBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const icon = btn.querySelector('.material-symbols-outlined');
+        const originalIcon = icon.textContent;
+        icon.textContent = 'check';
+        icon.classList.add('text-secondary');
+        
+        // Haptic feedback if available
+        if (window.navigator && window.navigator.vibrate) {
+          window.navigator.vibrate(50);
+        }
+        
+        setTimeout(() => {
+          icon.textContent = originalIcon;
+          icon.classList.remove('text-secondary');
+        }, 1500);
+      });
+    });
+  });
+</script></main></body></html>

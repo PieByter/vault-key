@@ -1,0 +1,82 @@
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#ffddb8", "error": "#ffb4ab", "primary-container": "#4d8eff", "on-secondary-container": "#00311f", "on-secondary": "#003824", "primary-fixed-dim": "#adc6ff", "on-surface-variant": "#c2c6d6", "surface-bright": "#343946", "on-background": "#dee2f3", "secondary-container": "#00a572", "surface": "#0e131f", "on-tertiary-fixed": "#2a1700", "surface-variant": "#303542", "surface-container-lowest": "#090e1a", "on-tertiary-fixed-variant": "#653e00", "secondary-fixed-dim": "#4edea3", "on-tertiary": "#472a00", "surface-dim": "#0e131f", "tertiary": "#ffb95f", "on-tertiary-container": "#3e2400", "on-error": "#690005", "inverse-primary": "#005ac2", "on-secondary-fixed-variant": "#005236", "on-primary-fixed-variant": "#004395", "inverse-surface": "#dee2f3", "outline-variant": "#424754", "secondary-fixed": "#6ffbbe", "inverse-on-surface": "#2b303d", "on-primary": "#002e6a", "surface-container": "#1a1f2c", "surface-tint": "#adc6ff", "surface-container-low": "#161b28", "primary-fixed": "#d8e2ff", "tertiary-fixed-dim": "#ffb95f", "on-primary-container": "#00285d", "on-surface": "#dee2f3", "outline": "#8c909f", "secondary": "#4edea3", "surface-container-high": "#252a37", "surface-container-highest": "#303542", "background": "#0e131f", "error-container": "#93000a", "on-primary-fixed": "#001a42", "primary": "#adc6ff", "on-error-container": "#ffdad6", "on-secondary-fixed": "#002113", "tertiary-container": "#ca8100" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "sm": "8px", "margin-tablet": "32px", "gutter": "16px", "xs": "4px", "xl": "32px", "margin-mobile": "16px", "lg": "24px", "md": "16px", "base": "8px" }, "fontFamily": { "headline-md": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "code-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script></head><body class="bg-background text-on-background font-body-md"><main class="relative w-full min-h-screen"><div class="flex flex-col w-full h-full p-margin-mobile gap-xl items-center justify-center min-h-[600px] bg-background">
+<!-- Brand Logo -->
+<div class="w-24 h-24 mb-lg flex items-center justify-center">
+<img alt="VaultKey Brand Logo" class="w-full h-full object-contain filter drop-shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlTnSh-XWFPGNV7ppXs8SbiEC5eTvrW79LVtLU0Imv2PGAMnWeNzrFZFvFie0qMo5cng1wqMa6XqjU-rm_Ue664CYH-ppB-bYqiHBmM83chmb62cPDu7joVB6OYo31-_Idb86xQtxmvrv7J-ZKg95G7f50DZLBkm6zO24SCLXa12G-IBZ0romEHFL98-njsVVq8s_pI1_VaCETkXUcP-j2iNhkv01OftVn_7tOsAv4yPRug--rwjwyaw"/>
+</div>
+<!-- Login Form Container -->
+<div class="w-full max-w-sm flex flex-col gap-lg bg-surface p-xl rounded-xl shadow-lg border border-surface-variant">
+<!-- Header -->
+<div class="text-center">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface mb-xs">Welcome Back</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Enter your credentials to access your vault.</p>
+</div>
+<!-- Inputs -->
+<div class="flex flex-col gap-md w-full">
+<!-- Email Input -->
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface" for="email">Email Address</label>
+<div class="relative flex items-center bg-surface-container rounded-md border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors duration-200">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">mail</span>
+<input class="w-full bg-transparent text-body-md font-body-md text-on-surface py-2 pl-10 pr-3 outline-none placeholder:text-outline" id="email" placeholder="john.doe@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-xs relative">
+<div class="flex justify-between items-center">
+<label class="text-label-sm font-label-sm text-on-surface" for="password">Master Password</label>
+<button class="text-label-sm font-label-sm text-primary hover:text-primary-fixed-dim transition-colors" type="button">Forgot Password?</button>
+</div>
+<div class="relative flex items-center bg-surface-container rounded-md border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-colors duration-200">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">lock</span>
+<input class="w-full bg-transparent text-body-md font-body-md text-on-surface py-2 pl-10 pr-10 outline-none placeholder:text-outline" id="password" placeholder="••••••••••••••••" type="password"/>
+<button class="absolute right-3 text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-primary" id="toggle-password" type="button">
+<span class="material-symbols-outlined text-[20px]" id="eye-icon">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full bg-[#3B82F6] hover:bg-inverse-primary text-white text-body-md font-body-md font-medium py-3 rounded-md transition-colors duration-200 shadow-md flex items-center justify-center gap-sm active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[20px]">login</span>
+            Log In
+        </button>
+<!-- Biometric / OR divider -->
+<div class="flex items-center gap-md w-full my-sm">
+<div class="h-px bg-surface-variant flex-1"></div>
+<span class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Or continue with</span>
+<div class="h-px bg-surface-variant flex-1"></div>
+</div>
+<!-- Biometric Login Button -->
+<button class="w-full flex items-center justify-center gap-sm p-3 rounded-md border border-surface-variant text-on-surface bg-surface hover:bg-surface-container-high transition-colors duration-200 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-primary text-[24px]">fingerprint</span>
+<span class="text-body-md font-body-md font-medium">Biometric Login</span>
+</button>
+</div>
+<!-- Sign Up Link -->
+<div class="mt-md text-center">
+<p class="text-body-md font-body-md text-on-surface-variant">
+            Don't have an account? 
+            <a class="text-primary hover:text-primary-fixed-dim font-medium transition-colors" href="#">Sign Up</a>
+</p>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const passwordInput = document.getElementById('password');
+        const toggleButton = document.getElementById('toggle-password');
+        const eyeIcon = document.getElementById('eye-icon');
+
+        toggleButton.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+            
+            // Subtle animation on the icon
+            eyeIcon.classList.add('scale-75', 'opacity-50');
+            setTimeout(() => {
+                eyeIcon.classList.remove('scale-75', 'opacity-50');
+            }, 150);
+        });
+    });
+</script></main></body></html>
