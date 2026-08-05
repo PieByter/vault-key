@@ -8,8 +8,10 @@ import '../models/category.dart';
 import '../providers/providers.dart';
 import '../widgets/vault_input.dart';
 import '../widgets/strength_bar.dart';
-import '../widgets/totp_timer.dart';
+import '../widgets/totp_code_display.dart';
+import '../services/totp_service.dart';
 import 'password_generator_screen.dart';
+import 'qr_scanner_screen.dart';
 
 /// Add/Edit password screen with sections for credentials and metadata.
 class AddEditPasswordScreen extends ConsumerStatefulWidget {
@@ -114,7 +116,13 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
     String? url = _urlController.text.trim();
     if (url.isEmpty) url = null;
     String? totp = _totpController.text.trim();
-    if (totp.isEmpty) totp = null;
+    if (totp.isEmpty) {
+      totp = null;
+    } else {
+      // If the user pasted an otpauth:// URI, extract only the secret.
+      final parsed = TotpService.parseOtpauthUri(totp);
+      if (parsed != null) totp = parsed.secret;
+    }
     String? notes = _notesController.text.trim();
     if (notes.isEmpty) notes = null;
 
@@ -429,26 +437,50 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                   const SizedBox(height: 16),
 
                   // TOTP
-                  _Label('Authenticator Code'),
+                  _Label('Authenticator Code (TOTP)'),
                   Row(
                     children: [
                       Expanded(
                         child: VaultInput(
                           controller: _totpController,
-                          hintText: '000 000',
+                          hintText: 'Paste secret or otpauth:// URI',
                           prefixIcon: Icons.timer_outlined,
                           isCode: true,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      const TOTPTimer(size: 40, strokeWidth: 3),
                       const SizedBox(width: 8),
                       IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.content_copy, size: 20),
+                        onPressed: () async {
+                          final scanned = await Navigator.push<String>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => QRScannerScreen(
+                                onManualEntry: () => Navigator.pop(context),
+                              ),
+                            ),
+                          );
+                          if (scanned != null && mounted) {
+                            final parsed = TotpService.parseOtpauthUri(scanned);
+                            setState(() {
+                              _totpController.text = parsed?.secret ?? scanned;
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.qr_code_scanner, size: 20),
                         color: AppTheme.onSurfaceVariant,
+                        tooltip: 'Scan QR code',
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  TotpCodeDisplay(secret: _totpController.text),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Enter the base32 secret or scan a QR code from the '
+                    'service you want to protect (e.g. Google, GitHub).',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5),
+                    ),
                   ),
                 ],
               ),
