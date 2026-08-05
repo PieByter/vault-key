@@ -14,7 +14,6 @@ import '../services/sync_service.dart';
 /// All writes go to in-memory cache first → encrypt → sync to Firestore.
 /// All reads come from in-memory cache (decrypted on load).
 class CredentialRepository {
-  final EncryptionService _encryption;
   final SyncService _sync;
 
   /// In-memory decrypted cache.
@@ -23,11 +22,7 @@ class CredentialRepository {
   enc.Key? _masterKey;
   String? _userId;
 
-  CredentialRepository({
-    required EncryptionService encryption,
-    required SyncService sync,
-  }) : _encryption = encryption,
-       _sync = sync;
+  CredentialRepository({required SyncService sync}) : _sync = sync;
 
   // ── Session ──────────────────────────────────────────────────────────────
 

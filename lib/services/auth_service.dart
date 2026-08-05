@@ -38,14 +38,14 @@ class AuthService {
 
   // ── Sign Up ──────────────────────────────────────────────────────────────
 
-  /// Create new account: Firebase Auth + generate encryption key.
+  /// Create new account: Firebase Auth + derive master key from password.
   /// Returns the Firebase [User] on success.
   Future<User> signUp(String email, String password) async {
     final credential = await _firebase.signUp(email, password);
     final user = credential.user!;
 
-    // Generate and store the master encryption key
-    await _encryption.generateAndStoreMasterKey();
+    // Create the master encryption key FROM the master password (PBKDF2)
+    await _encryption.createMasterKey(password);
 
     // Initialize default categories
     final defaults = _defaultCategories(user.uid);
@@ -57,24 +57,15 @@ class AuthService {
 
   // ── Log In ───────────────────────────────────────────────────────────────
 
-  /// Log in: Firebase Auth + verify master key exists.
+  /// Log in: Firebase Auth verifies the password.
   Future<User> logIn(String email, String password) async {
     final credential = await _firebase.signIn(email, password);
     final user = credential.user!;
 
-    // Verify the master key is still in secure storage
-    final key = await _encryption.loadMasterKey();
-    if (key == null) {
-      // Key lost — user needs to re-generate (data would be unreadable anyway)
-      throw AuthException(
-        'Encryption key not found. If you reinstalled the app, '
-        'your vault data cannot be recovered without a backup.',
-      );
-    }
-
-    final valid = await _encryption.verifyMasterKey(key);
-    if (!valid) {
-      throw AuthException('Master key verification failed.');
+    // If the vault is not set up on this device yet (e.g. account created
+    // before the password-key change), initialize it with this password.
+    if (!await _encryption.isMasterKeySet) {
+      await _encryption.createMasterKey(password);
     }
 
     debugPrint('✅ VaultKey: Login complete for ${user.email}');
@@ -84,17 +75,47 @@ class AuthService {
   // ── Log Out ──────────────────────────────────────────────────────────────
 
   Future<void> logOut() async {
-    await _encryption.clearMasterKey();
+    // Only the convenience device key is cleared; salt + verification token
+    // stay so the user can unlock again after logging back in.
+    await _encryption.clearDeviceKey();
     await _firebase.signOut();
     debugPrint('✅ VaultKey: Logged out');
   }
 
   // ── Unlock (after login, biometric, or timeout) ──────────────────────────
 
-  /// Unlock the vault: load master key into memory.
-  /// Returns the loaded key for use in the current session.
-  Future<UnlockResult> unlock() async {
-    final key = await _encryption.loadMasterKey();
+  /// Unlock the vault with the master password: re-derive the key from
+  /// the password (PBKDF2) and verify it. Returns the key on success.
+  ///
+  /// If the vault was never set up on this device (legacy account created
+  /// before the password-key change, or fresh device), it is initialized
+  /// with the typed password — the account password was already verified
+  /// by Firebase at login.
+  Future<UnlockResult> unlock(String masterPassword) async {
+    if (masterPassword.isEmpty) {
+      return UnlockResult(keyInvalid: true);
+    }
+
+    if (!await _encryption.isMasterKeySet) {
+      // Legacy migration: create the vault with the entered password.
+      final key = await _encryption.createMasterKey(masterPassword);
+      await _encryption.storeDeviceKey(key);
+      return UnlockResult(success: true, key: key);
+    }
+
+    final key = await _encryption.unlockWithPassword(masterPassword);
+    if (key == null) {
+      return UnlockResult(keyInvalid: true); // wrong master password
+    }
+    // Keep a copy for biometric convenience during this device session
+    await _encryption.storeDeviceKey(key);
+    return UnlockResult(success: true, key: key);
+  }
+
+  /// Unlock with biometrics: load the device key stored after the last
+  /// successful password unlock.
+  Future<UnlockResult> unlockWithBiometric() async {
+    final key = await _encryption.loadDeviceKey();
     if (key == null) {
       return UnlockResult(keyMissing: true);
     }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 /// Thin wrapper around Firebase services: Auth + Firestore.
 ///
@@ -16,12 +15,6 @@ class FirebaseService {
   FirebaseService({FirebaseAuth? auth, FirebaseFirestore? firestore})
     : _auth = auth ?? FirebaseAuth.instance,
       _firestore = firestore ?? FirebaseFirestore.instance;
-
-  // ── Init ─────────────────────────────────────────────────────────────────
-
-  static Future<void> initialize() async {
-    await Firebase.initializeApp();
-  }
 
   // ── Auth ─────────────────────────────────────────────────────────────────
 

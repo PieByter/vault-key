@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+
 import '../theme/app_theme.dart';
+import '../models/credential.dart';
+import '../models/category.dart';
+import '../providers/providers.dart';
 import '../widgets/vault_input.dart';
 import '../widgets/strength_bar.dart';
 import '../widgets/totp_timer.dart';
@@ -23,19 +28,38 @@ class AddEditPasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
-  final _itemNameController = TextEditingController(
-    text: 'Acme Corp Dashboard',
-  );
-  final _urlController = TextEditingController(
-    text: 'https://dashboard.acmecorp.com',
-  );
-  final _usernameController = TextEditingController(text: 'j.doe@acmecorp.com');
+  final _itemNameController = TextEditingController();
+  final _urlController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _totpController = TextEditingController();
   final _notesController = TextEditingController();
 
   int _passwordStrength = 0;
-  final String _selectedVault = 'Work Credentials';
+  String? _selectedCategoryId;
+  final List<String> _tags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Prefill when editing an existing credential.
+    if (widget.isEditing && widget.credentialId != null) {
+      final existing = ref
+          .read(credentialRepositoryProvider)
+          .getById(widget.credentialId!);
+      if (existing != null) {
+        _itemNameController.text = existing.name;
+        _urlController.text = existing.url ?? '';
+        _usernameController.text = existing.username;
+        _passwordController.text = existing.password;
+        _totpController.text = existing.totpSecret ?? '';
+        _notesController.text = existing.notes ?? '';
+        _selectedCategoryId = existing.categoryId;
+        _tags.addAll(existing.tags);
+        _updateStrength(existing.password);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -57,8 +81,204 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
     setState(() => _passwordStrength = score.clamp(0, 4));
   }
 
+  /// Persist the item: insert or update, then sync to Firestore.
+  Future<void> _save() async {
+    final notifier = ref.read(appStateProvider.notifier);
+    final user = ref.read(authRepositoryProvider).currentUser;
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    if (user == null) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Not logged in.'),
+          backgroundColor: AppTheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final name = _itemNameController.text.trim();
+    if (name.isEmpty) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Item name is required.'),
+          backgroundColor: AppTheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    String? url = _urlController.text.trim();
+    if (url.isEmpty) url = null;
+    String? totp = _totpController.text.trim();
+    if (totp.isEmpty) totp = null;
+    String? notes = _notesController.text.trim();
+    if (notes.isEmpty) notes = null;
+
+    if (widget.isEditing) {
+      final id = widget.credentialId;
+      if (id == null) return;
+      await notifier.updateCredential(
+        id,
+        (c) => c.copyWith(
+          name: name,
+          url: url,
+          username: _usernameController.text.trim(),
+          password: _passwordController.text,
+          totpSecret: totp,
+          notes: notes,
+          categoryId: _selectedCategoryId,
+          tags: List.unmodifiable(_tags),
+        ),
+      );
+    } else {
+      final now = DateTime.now();
+      await notifier.addCredential(
+        Credential(
+          id: const Uuid().v4(),
+          userId: user.uid,
+          type: CredentialType.login,
+          name: name,
+          url: url,
+          username: _usernameController.text.trim(),
+          password: _passwordController.text,
+          totpSecret: totp,
+          notes: notes,
+          categoryId: _selectedCategoryId,
+          tags: List.unmodifiable(_tags),
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+    }
+
+    if (!mounted) return;
+    navigator.pop();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.isEditing ? 'Changes saved.' : '$name added to your vault.',
+        ),
+        backgroundColor: AppTheme.primary,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  /// Let the user choose a folder from their categories.
+  Future<void> _pickCategory(
+    BuildContext context,
+    List<CredentialCategory> categories,
+  ) async {
+    if (categories.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No folders yet. Create one in Settings.'),
+          backgroundColor: AppTheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final picked = await showModalBottomSheet<CredentialCategory>(
+      context: context,
+      backgroundColor: AppTheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Choose folder',
+                style: Theme.of(ctx).textTheme.titleMedium,
+              ),
+            ),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final cat in categories)
+                    ListTile(
+                      leading: const Icon(
+                        Icons.folder_outlined,
+                        color: AppTheme.primary,
+                      ),
+                      title: Text(cat.name),
+                      trailing: cat.id == _selectedCategoryId
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppTheme.primary,
+                            )
+                          : null,
+                      onTap: () => Navigator.pop(ctx, cat),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (picked != null && mounted) {
+      setState(() => _selectedCategoryId = picked.id);
+    }
+  }
+
+  /// Prompt the user for a new tag and add it.
+  Future<void> _addTag() async {
+    final controller = TextEditingController();
+    final tag = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        title: const Text('Add Tag'),
+        content: VaultInput(
+          controller: controller,
+          hintText: 'e.g. Work, Family, Critical',
+          prefixIcon: Icons.tag,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (v) => Navigator.pop(ctx, v),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+
+    final trimmed = tag?.trim();
+    if (trimmed == null || trimmed.isEmpty) return;
+    if (_tags.contains(trimmed)) return; // no duplicates
+    setState(() => _tags.add(trimmed));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final categories = ref
+        .watch(categoryRepositoryProvider)
+        .all
+        .where((c) => !c.isDeleted)
+        .toList();
+    final selectedCategory = categories
+        .where((c) => c.id == _selectedCategoryId)
+        .firstOrNull;
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
@@ -72,7 +292,12 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
         actions: [
           if (widget.isEditing)
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                final id = widget.credentialId;
+                if (id == null) return;
+                await ref.read(appStateProvider.notifier).deleteCredential(id);
+                if (context.mounted) Navigator.pop(context);
+              },
               style: TextButton.styleFrom(foregroundColor: AppTheme.error),
               child: const Text('Delete'),
             ),
@@ -94,7 +319,10 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                 ),
                 const SizedBox(height: 16),
                 _Label('Vault / Folder'),
-                _VaultPicker(value: _selectedVault, onTap: () {}),
+                _VaultPicker(
+                  value: selectedCategory?.name ?? 'Select folder',
+                  onTap: () => _pickCategory(context, categories),
+                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -244,12 +472,15 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _TagChip(label: 'Work', onDelete: () {}),
-                    _TagChip(label: 'Critical', onDelete: () {}),
+                    for (final tag in _tags)
+                      _TagChip(
+                        label: tag,
+                        onDelete: () => setState(() => _tags.remove(tag)),
+                      ),
                     ActionChip(
                       avatar: const Icon(Icons.add, size: 16),
                       label: const Text('Add'),
-                      onPressed: () {},
+                      onPressed: _addTag,
                       backgroundColor: AppTheme.surfaceContainerHigh,
                       side: BorderSide.none,
                     ),
@@ -261,7 +492,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
 
             // Save button
             ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: _save,
               child: Text(widget.isEditing ? 'Save Changes' : 'Add Item'),
             ),
             const SizedBox(height: 32),

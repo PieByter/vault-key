@@ -13,6 +13,7 @@ class Credential {
   final String? totpSecret; // encrypted TOTP seed
   final String? notes; // encrypted
   final String? categoryId;
+  final List<String> tags;
   final bool isFavorite;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -29,6 +30,7 @@ class Credential {
     this.totpSecret,
     this.notes,
     this.categoryId,
+    this.tags = const [],
     this.isFavorite = false,
     required this.createdAt,
     required this.updatedAt,
@@ -46,6 +48,7 @@ class Credential {
     String? totpSecret,
     String? notes,
     String? categoryId,
+    List<String>? tags,
     bool? isFavorite,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -62,6 +65,7 @@ class Credential {
       totpSecret: totpSecret ?? this.totpSecret,
       notes: notes ?? this.notes,
       categoryId: categoryId ?? this.categoryId,
+      tags: tags ?? this.tags,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -82,6 +86,7 @@ class Credential {
       totpSecret: json['totpSecret'] as String?,
       notes: json['notes'] as String?,
       categoryId: json['categoryId'] as String?,
+      tags: (json['tags'] as List?)?.cast<String>() ?? const [],
       isFavorite: json['isFavorite'] as bool? ?? false,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -102,6 +107,7 @@ class Credential {
       'totpSecret': totpSecret,
       'notes': notes,
       'categoryId': categoryId,
+      'tags': tags,
       'isFavorite': isFavorite,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),

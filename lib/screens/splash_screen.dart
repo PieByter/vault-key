@@ -23,8 +23,8 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 2),
     )..repeat();
 
-    // Simulate initialization
-    Future.delayed(const Duration(seconds: 3), () {
+    // Brief minimum display time — real work happens in bootstrap() after this.
+    Future.delayed(const Duration(milliseconds: 900), () {
       if (mounted) widget.onComplete?.call();
     });
   }

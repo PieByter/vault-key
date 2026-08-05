@@ -59,29 +59,22 @@ class AuthRepository {
   // ── Unlock ───────────────────────────────────────────────────────────────
 
   /// Unlock with master password (after Firebase login).
-  Future<AuthResult> unlock() async {
-    final result = await _authService.unlock();
-    if (result.keyMissing || result.keyInvalid) {
+  Future<AuthResult> unlock(String masterPassword) async {
+    final result = await _authService.unlock(masterPassword);
+    if (result.keyMissing) {
       return AuthResult.failure(
         'Unable to unlock vault. The encryption key is missing or invalid.',
       );
+    }
+    if (result.keyInvalid) {
+      return AuthResult.failure('Incorrect master password.');
     }
     if (!result.success) {
       return AuthResult.failure('Unlock failed.');
     }
 
-    // Set session on repositories
-    final user = _authService.currentUser;
-    if (user == null) return AuthResult.failure('Not logged in.');
-
-    _credentialRepo.setSession(masterKey: result.key, userId: user.uid);
-    _categoryRepo.setSession(masterKey: result.key, userId: user.uid);
-
-    // Load data
-    await _categoryRepo.load();
-    await _credentialRepo.loadFromCloud();
-
-    return AuthResult.success(user);
+    await _establishSession(result.key);
+    return AuthResult.success(_authService.currentUser);
   }
 
   /// Unlock with biometric.
@@ -89,8 +82,28 @@ class AuthRepository {
     final bioOk = await _biometricService.unlock();
     if (!bioOk) return false;
 
-    final unlockResult = await unlock();
-    return unlockResult.isSuccess;
+    final result = await _authService.unlockWithBiometric();
+    if (!result.success) return false;
+
+    await _establishSession(result.key);
+    return true;
+  }
+
+  /// Set up repositories with the unlocked key and load data.
+  Future<void> _establishSession(dynamic key) async {
+    final user = _authService.currentUser;
+    if (user == null) throw StateError('Not logged in.');
+
+    _credentialRepo.setSession(masterKey: key, userId: user.uid);
+    _categoryRepo.setSession(masterKey: key, userId: user.uid);
+
+    // Load data (offline-first — never block unlock on the network).
+    await _categoryRepo.load();
+    try {
+      await _credentialRepo.loadFromCloud().timeout(const Duration(seconds: 4));
+    } catch (_) {
+      // Offline or slow network — proceed with local data, sync happens later.
+    }
   }
 
   // ── Log Out ──────────────────────────────────────────────────────────────

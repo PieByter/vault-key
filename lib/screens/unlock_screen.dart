@@ -9,12 +9,15 @@ class UnlockScreen extends StatefulWidget {
     this.onUnlock,
     this.onBiometricUnlock,
     this.onForgotPassword,
+    this.onResetVault,
     this.isLoading = false,
   });
 
-  final VoidCallback? onUnlock;
+  /// Called with the typed master password when the user taps Unlock.
+  final ValueChanged<String>? onUnlock;
   final VoidCallback? onBiometricUnlock;
   final VoidCallback? onForgotPassword;
+  final VoidCallback? onResetVault;
   final bool isLoading;
 
   @override
@@ -125,6 +128,8 @@ class _UnlockScreenState extends State<UnlockScreen> {
                         isCode: true,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.done,
+                        onSubmitted: (_) =>
+                            widget.onUnlock?.call(_passwordController.text),
                       ),
                       const SizedBox(height: 16),
 
@@ -132,7 +137,11 @@ class _UnlockScreenState extends State<UnlockScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: widget.isLoading ? null : widget.onUnlock,
+                          onPressed: widget.isLoading
+                              ? null
+                              : () => widget.onUnlock?.call(
+                                  _passwordController.text,
+                                ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primary,
                             foregroundColor: AppTheme.onPrimary,
@@ -180,6 +189,20 @@ class _UnlockScreenState extends State<UnlockScreen> {
                           'Forgot Master Password?',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppTheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Start Fresh — wipe vault & start over
+                      TextButton(
+                        onPressed: widget.onResetVault,
+                        child: Text(
+                          'Start Fresh',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppTheme.onSurfaceVariant.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                         ),
                       ),

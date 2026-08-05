@@ -54,10 +54,7 @@ final syncServiceProvider = Provider<SyncService>((ref) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 final credentialRepositoryProvider = Provider<CredentialRepository>((ref) {
-  return CredentialRepository(
-    encryption: ref.watch(encryptionServiceProvider),
-    sync: ref.watch(syncServiceProvider),
-  );
+  return CredentialRepository(sync: ref.watch(syncServiceProvider));
 });
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
@@ -89,6 +86,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   final AuthRepository _authRepo;
   final CredentialRepository _credentialRepo;
   final DatabaseService _database;
+  final EncryptionService _encryption;
 
   AppStateNotifier({
     required AuthRepository authRepo,
@@ -99,6 +97,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }) : _authRepo = authRepo,
        _credentialRepo = credentialRepo,
        _database = database,
+       _encryption = encryption,
        super(const AppState());
 
   // ── Bootstrap ──────────────────────────────────────────────────────────
@@ -156,9 +155,9 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   // ── Unlock ─────────────────────────────────────────────────────────────
 
-  Future<void> unlock() async {
+  Future<void> unlock(String masterPassword) async {
     state = state.copyWith(isLoading: true, error: null);
-    final result = await _authRepo.unlock();
+    final result = await _authRepo.unlock(masterPassword);
     if (result.isSuccess) {
       state = state.copyWith(phase: AppPhase.main, isLoading: false);
     } else {
@@ -173,6 +172,15 @@ class AppStateNotifier extends StateNotifier<AppState> {
     } else {
       state = state.copyWith(error: 'Biometric unlock failed');
     }
+  }
+
+  // ── Reset Vault ───────────────────────────────────────────────────────
+
+  /// Wipe the local vault so the user can start over with a fresh password.
+  Future<void> resetVault() async {
+    await _encryption.resetVault();
+    await _authRepo.logOut();
+    state = const AppState();
   }
 
   // ── Logout ─────────────────────────────────────────────────────────────

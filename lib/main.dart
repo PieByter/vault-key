@@ -11,6 +11,7 @@ import 'screens/login_screen.dart';
 import 'screens/unlock_screen.dart';
 import 'screens/vault_home_screen.dart';
 import 'screens/authenticator_screen.dart';
+import 'screens/reset_password_screen.dart';
 import 'screens/add_edit_password_screen.dart';
 import 'screens/settings_screen.dart';
 import 'providers/providers.dart';
@@ -90,14 +91,37 @@ class _AppShellState extends ConsumerState<AppShell> {
           key: UniqueKey(),
           onLogin: (email, password) => notifier.logIn(email, password),
           onSignUp: () => notifier.switchAuthMode(),
-          onForgotPassword: (email) {},
+          onForgotPassword: (email) async {
+            final result = await ref
+                .read(authRepositoryProvider)
+                .sendPasswordReset(email);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    result.isSuccess
+                        ? (result.message ?? 'Password reset email sent.')
+                        : (result.error ?? 'Failed to send reset email.'),
+                  ),
+                  backgroundColor: result.isSuccess
+                      ? AppTheme.primary
+                      : AppTheme.error,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
           isLoading: state.isLoading,
         ),
       },
       AppPhase.unlock => UnlockScreen(
-        onUnlock: () => notifier.unlock(),
+        onUnlock: (password) => notifier.unlock(password),
         onBiometricUnlock: () => notifier.unlockWithBiometric(),
-        onForgotPassword: () {},
+        onForgotPassword: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
+        ),
+        onResetVault: () => notifier.resetVault(),
         isLoading: state.isLoading,
       ),
       AppPhase.main => Scaffold(

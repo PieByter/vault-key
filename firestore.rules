@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each user may only read/write their OWN data.
+    // Structure:
+    //   users/{uid}                     → ping metadata (lastPing)
+    //   users/{uid}/credentials/{docId} → encrypted credentials
+    //   users/{uid}/categories/{docId}  → categories
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /credentials/{credentialId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      match /categories/{categoryId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // Deny everything else (default deny).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
