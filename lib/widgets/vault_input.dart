@@ -150,7 +150,7 @@ class _VaultInputState extends State<VaultInput> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppTheme.primary, width: 1),
+          borderSide: BorderSide(color: AppTheme.primary, width: 1),
         ),
       ),
     );

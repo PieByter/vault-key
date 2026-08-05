@@ -78,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: AppTheme.surfaceContainer,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.security,
                       size: 32,
                       color: AppTheme.primary,
@@ -206,7 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onChanged: (v) =>
                           setState(() => _agreedToTerms = v ?? false),
                       activeColor: AppTheme.primary,
-                      side: const BorderSide(color: AppTheme.outline),
+                      side: BorderSide(color: AppTheme.outline),
                     ),
                     Expanded(
                       child: Text.rich(

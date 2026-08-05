@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 128,
                   child: Image.asset(
                     'assets/brand/logo.png',
-                    errorBuilder: (_, _, _) => const Icon(
+                    errorBuilder: (_, _, _) => Icon(
                       Icons.shield_outlined,
                       size: 80,
                       color: AppTheme.primary,

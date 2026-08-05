@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'firebase_options.dart';
+import 'services/database_service.dart';
 import 'theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -22,7 +25,19 @@ void main() async {
   // Initialize Firebase with generated options
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const ProviderScope(child: VaultKeyApp()));
+  // Load persisted theme preference before the app starts
+  final darkMode = await DatabaseService().getDarkModeEnabled();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        themeModeProvider.overrideWith(
+          (ref) => darkMode ? ThemeMode.dark : ThemeMode.light,
+        ),
+      ],
+      child: const VaultKeyApp(),
+    ),
+  );
 }
 
 class VaultKeyApp extends ConsumerWidget {
@@ -30,10 +45,15 @@ class VaultKeyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    AppTheme.isDark = themeMode == ThemeMode.dark;
+
     return MaterialApp(
       title: 'VaultKey',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme(context),
+      theme: AppTheme.lightTheme(context),
+      darkTheme: AppTheme.darkTheme(context),
+      themeMode: themeMode,
       home: const AppShell(),
     );
   }
@@ -49,7 +69,8 @@ class AppShell extends ConsumerStatefulWidget {
   ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends ConsumerState<AppShell> {
+class _AppShellState extends ConsumerState<AppShell>
+    with WidgetsBindingObserver {
   int _currentTab = 0;
 
   final _tabs = const [
@@ -57,6 +78,54 @@ class _AppShellState extends ConsumerState<AppShell> {
     AuthenticatorScreen(),
     SettingsScreen(),
   ];
+
+  /// Last user interaction — used by the auto-lock timer.
+  DateTime _lastActive = DateTime.now();
+  Timer? _lockTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Check every 15 seconds whether the vault should auto-lock.
+    _lockTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      final state = ref.read(appStateProvider);
+      final minutes = state.autoLockMinutes;
+      if (state.phase == AppPhase.main &&
+          DateTime.now().difference(_lastActive).inMinutes >= minutes) {
+        ref.read(appStateProvider.notifier).autoLock();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _lockTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // When the app comes back to the foreground, lock if idle too long.
+      final app = ref.read(appStateProvider);
+      if (app.phase == AppPhase.main &&
+          DateTime.now().difference(_lastActive).inMinutes >=
+              app.autoLockMinutes) {
+        ref.read(appStateProvider.notifier).autoLock();
+      }
+      _lastActive = DateTime.now();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _lastActive = DateTime.now();
+    }
+  }
+
+  void _onUserActivity() {
+    _lastActive = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,12 +194,18 @@ class _AppShellState extends ConsumerState<AppShell> {
         isLoading: state.isLoading,
       ),
       AppPhase.main => Scaffold(
-        body: IndexedStack(index: _currentTab, children: _tabs),
+        body: Listener(
+          onPointerDown: (_) => _onUserActivity(),
+          child: IndexedStack(index: _currentTab, children: _tabs),
+        ),
         bottomNavigationBar: NavigationBar(
           backgroundColor: AppTheme.surface,
           indicatorColor: AppTheme.primaryContainer.withValues(alpha: 0.2),
           selectedIndex: _currentTab,
-          onDestinationSelected: (i) => setState(() => _currentTab = i),
+          onDestinationSelected: (i) {
+            _onUserActivity();
+            setState(() => _currentTab = i);
+          },
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.shield_outlined),

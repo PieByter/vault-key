@@ -77,7 +77,7 @@ class _AuthenticatorScreenState extends ConsumerState<AuthenticatorScreen> {
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: totpItems.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final cred = totpItems[index];
                 return _TotpCard(credential: cred);
@@ -101,10 +101,7 @@ class _AuthenticatorScreenState extends ConsumerState<AuthenticatorScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(
-                  Icons.qr_code_scanner,
-                  color: AppTheme.primary,
-                ),
+                leading: Icon(Icons.qr_code_scanner, color: AppTheme.primary),
                 title: const Text('Scan QR Code'),
                 subtitle: const Text('Use your camera'),
                 onTap: () {
@@ -113,10 +110,7 @@ class _AuthenticatorScreenState extends ConsumerState<AuthenticatorScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.content_paste,
-                  color: AppTheme.primary,
-                ),
+                leading: Icon(Icons.content_paste, color: AppTheme.primary),
                 title: const Text('Paste setup key'),
                 subtitle: const Text('Manually enter the secret'),
                 onTap: () {
@@ -215,7 +209,7 @@ class _AuthenticatorScreenState extends ConsumerState<AuthenticatorScreen> {
     if (parsed == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Invalid QR code. Expected an otpauth:// URI.'),
             backgroundColor: AppTheme.error,
             behavior: SnackBarBehavior.floating,

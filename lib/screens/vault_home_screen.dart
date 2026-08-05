@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
 import '../models/credential.dart';
 import '../providers/providers.dart';
@@ -80,7 +82,7 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
                             alpha: 0.5,
                           ),
                         ),
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search,
                           color: AppTheme.onSurfaceVariant,
                         ),
@@ -113,7 +115,7 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
                       'assets/images/profile.png',
                     ),
                     onBackgroundImageError: (_, _) {},
-                    child: const Icon(
+                    child: Icon(
                       Icons.person_outline,
                       size: 20,
                       color: AppTheme.onSurfaceVariant,
@@ -243,8 +245,8 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
       title: cred.name,
       subtitle: cred.username,
       iconColor: iconColor,
-      onCopy: () {},
-      onMore: () {},
+      onCopy: () => _copyUsername(context, cred),
+      onMore: () => _showCardMenu(context, cred),
       onTap: () {
         Navigator.push(
           context,
@@ -255,5 +257,116 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
         );
       },
     );
+  }
+
+  void _copyUsername(BuildContext context, Credential cred) {
+    if (cred.username.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No username to copy.'),
+          backgroundColor: AppTheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    Clipboard.setData(ClipboardData(text: cred.username));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Username copied'),
+        backgroundColor: AppTheme.primary,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showCardMenu(BuildContext context, Credential cred) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppTheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.person_outline, color: AppTheme.primary),
+              title: const Text('Copy Username'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _copyUsername(context, cred);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.lock_outline, color: AppTheme.primary),
+              title: const Text('Copy Password'),
+              onTap: () {
+                Navigator.pop(ctx);
+                if (cred.password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('No password to copy.'),
+                      backgroundColor: AppTheme.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  return;
+                }
+                Clipboard.setData(ClipboardData(text: cred.password));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Password copied'),
+                    backgroundColor: AppTheme.primary,
+                    duration: const Duration(seconds: 2),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            if (cred.url != null && cred.url!.isNotEmpty)
+              ListTile(
+                leading: Icon(Icons.open_in_new, color: AppTheme.primary),
+                title: const Text('Open URL'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _openUrl(cred.url!);
+                },
+              ),
+            Divider(color: AppTheme.outlineVariant, height: 1),
+            ListTile(
+              leading: Icon(
+                Icons.edit_outlined,
+                color: AppTheme.onSurfaceVariant,
+              ),
+              title: const Text('Edit'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddEditPasswordScreen(
+                      isEditing: true,
+                      credentialId: cred.id,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openUrl(String url) async {
+    var target = url.trim();
+    if (!target.startsWith('http://') && !target.startsWith('https://')) {
+      target = 'https://$target';
+    }
+    // Web / mobile launch
+    await launchUrl(Uri.parse(target));
   }
 }

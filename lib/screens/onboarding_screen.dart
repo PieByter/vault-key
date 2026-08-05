@@ -15,7 +15,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
 
-  final _slides = const [
+  final _slides = [
     _SlideData(
       icon: Icons.lock,
       iconColor: AppTheme.primary,

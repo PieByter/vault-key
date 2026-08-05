@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/credential.dart';
@@ -172,6 +173,12 @@ class AppStateNotifier extends StateNotifier<AppState> {
     } else {
       state = state.copyWith(error: 'Biometric unlock failed');
     }
+  }
+
+  /// Lock the vault (auto-lock timeout) — back to the unlock screen.
+  void autoLock() {
+    if (state.phase != AppPhase.main) return;
+    state = state.copyWith(phase: AppPhase.unlock);
   }
 
   // ── Reset Vault ───────────────────────────────────────────────────────
@@ -350,7 +357,8 @@ final filteredCredentialsProvider = Provider<List<Credential>>((ref) {
   return state.credentials.where((c) {
     return c.name.toLowerCase().contains(lower) ||
         c.username.toLowerCase().contains(lower) ||
-        (c.url?.toLowerCase().contains(lower) ?? false);
+        (c.url?.toLowerCase().contains(lower) ?? false) ||
+        c.tags.any((t) => t.toLowerCase().contains(lower));
   }).toList();
 });
 
@@ -373,3 +381,6 @@ final syncStatusProvider = Provider<SyncStatus>((ref) {
   final state = ref.watch(appStateProvider);
   return state.isSyncing ? SyncStatus.pendingUpload : SyncStatus.synced;
 });
+
+/// Dark/light theme preference (stored in secure storage).
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.dark);

@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 96,
                     child: Image.asset(
                       'assets/brand/logo.png',
-                      errorBuilder: (_, _, _) => const Icon(
+                      errorBuilder: (_, _, _) => Icon(
                         Icons.shield_outlined,
                         size: 64,
                         color: AppTheme.primary,

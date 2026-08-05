@@ -46,6 +46,15 @@ class DatabaseService {
 
   // ── Preferences ──────────────────────────────────────────────────────────
 
+  Future<bool> getDarkModeEnabled() async {
+    final val = await _storage.read(key: 'dark_mode');
+    return val != 'false'; // default dark
+  }
+
+  Future<void> setDarkModeEnabled(bool enabled) {
+    return _storage.write(key: 'dark_mode', value: enabled.toString());
+  }
+
   Future<bool> getBiometricEnabled(String userId) async {
     final val = await _storage.read(key: 'biometric_$userId');
     return val == 'true';

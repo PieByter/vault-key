@@ -43,7 +43,7 @@ class ResetPasswordScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.info_outline,
                           color: AppTheme.primary,
                           size: 24,
@@ -84,7 +84,7 @@ class ResetPasswordScreen extends ConsumerWidget {
                 label: const Text('I remember now — go back & try again'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.primary,
-                  side: const BorderSide(color: AppTheme.primary),
+                  side: BorderSide(color: AppTheme.primary),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
@@ -113,7 +113,7 @@ class ResetPasswordScreen extends ConsumerWidget {
               const SizedBox(height: 32),
 
               // ── Divider ────────────────────────────────────────────
-              const Divider(color: AppTheme.outlineVariant),
+              Divider(color: AppTheme.outlineVariant),
               const SizedBox(height: 24),
 
               // ── FAQ ────────────────────────────────────────────────
@@ -197,7 +197,7 @@ class _Bullet extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('• ', style: TextStyle(color: AppTheme.onSurfaceVariant)),
+        Text('• ', style: TextStyle(color: AppTheme.onSurfaceVariant)),
         Expanded(
           child: Text(
             text,

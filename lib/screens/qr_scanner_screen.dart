@@ -1,189 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
 import '../theme/app_theme.dart';
 
-/// QR scanner screen with viewfinder overlay and scan animation.
-class QRScannerScreen extends StatelessWidget {
+/// Real QR code scanner using the device camera (mobile_scanner).
+///
+/// Detects a QR code and pops the screen with its raw value (e.g. an
+/// `otpauth://` URI).  Falls back gracefully when the camera is
+/// unavailable (e.g. some desktop builds) by offering manual entry.
+class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key, this.onManualEntry});
 
+  /// Called when the user taps "Manual Entry".
   final VoidCallback? onManualEntry;
+
+  @override
+  State<QRScannerScreen> createState() => _QRScannerScreenState();
+}
+
+class _QRScannerScreenState extends State<QRScannerScreen> {
+  final MobileScannerController _controller = MobileScannerController(
+    formats: const [BarcodeFormat.qrCode],
+    detectionSpeed: DetectionSpeed.noDuplicates,
+  );
+
+  bool _handled = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onDetect(BarcodeCapture capture) {
+    if (_handled) return;
+    final raw = capture.barcodes.firstOrNull?.rawValue;
+    if (raw == null || raw.isEmpty) return;
+    _handled = true;
+    // Stop scanning immediately and return the result
+    _controller.stop();
+    Navigator.pop(context, raw);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Simulated camera feed background
+          // Camera preview
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(color: AppTheme.surfaceContainerLowest),
+            child: MobileScanner(
+              controller: _controller,
+              onDetect: _onDetect,
+              errorBuilder: (context, error) =>
+                  _CameraUnavailable(onManualEntry: widget.onManualEntry),
             ),
           ),
 
           // Viewfinder overlay
-          Positioned.fill(
-            child: Column(
-              children: [
-                // Top shade
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: AppTheme.background.withValues(alpha: 0.8),
-                  ),
-                ),
-
-                // Middle row with scan area
-                Row(
-                  children: [
-                    // Left shade
-                    Expanded(
-                      child: Container(
-                        color: AppTheme.background.withValues(alpha: 0.8),
+          IgnorePointer(
+            child: Positioned.fill(
+              child: Column(
+                children: [
+                  // Top shade
+                  Expanded(flex: 1, child: Container(color: Colors.black54)),
+                  // Middle row with scan area
+                  Row(
+                    children: [
+                      Expanded(child: Container(color: Colors.black54)),
+                      SizedBox(
+                        width: 280,
+                        height: 280,
+                        child: CustomPaint(painter: _ViewfinderPainter()),
                       ),
-                    ),
-
-                    // Scan area
-                    SizedBox(
-                      width: 288,
-                      height: 288,
-                      child: Stack(
+                      Expanded(child: Container(color: Colors.black54)),
+                    ],
+                  ),
+                  // Bottom shade with text
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.black54,
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
                         children: [
-                          // Corner brackets
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            child: _CornerBracket(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                              ),
-                              shadows: const [
-                                BoxShadow(
-                                  color: AppTheme.secondary,
-                                  blurRadius: 0,
-                                  spreadRadius: 2,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
+                          Icon(
+                            Icons.qr_code_scanner,
+                            size: 40,
+                            color: AppTheme.primary,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Point your camera at a QR code',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'For TOTP, scan the QR code shown by GitHub, '
+                            'Google, or any authenticator setup page.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white70,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 24),
+                          OutlinedButton.icon(
+                            onPressed: widget.onManualEntry,
+                            icon: const Icon(Icons.keyboard, size: 18),
+                            label: const Text('Manual Entry'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white38),
                             ),
                           ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: _CornerBracket(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(12),
-                              ),
-                              shadows: const [
-                                BoxShadow(
-                                  color: AppTheme.secondary,
-                                  blurRadius: 0,
-                                  spreadRadius: 2,
-                                  offset: Offset(-2, 2),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            child: _CornerBracket(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(12),
-                              ),
-                              shadows: const [
-                                BoxShadow(
-                                  color: AppTheme.secondary,
-                                  blurRadius: 0,
-                                  spreadRadius: 2,
-                                  offset: Offset(2, -2),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: _CornerBracket(
-                              borderRadius: const BorderRadius.only(
-                                bottomRight: Radius.circular(12),
-                              ),
-                              shadows: const [
-                                BoxShadow(
-                                  color: AppTheme.secondary,
-                                  blurRadius: 0,
-                                  spreadRadius: 2,
-                                  offset: Offset(-2, -2),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Scanning line animation
-                          const _ScanLine(),
                         ],
                       ),
                     ),
-
-                    // Right shade
-                    Expanded(
-                      child: Container(
-                        color: AppTheme.background.withValues(alpha: 0.8),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Bottom shade with text
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: AppTheme.background.withValues(alpha: 0.8),
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      children: [
-                        const Icon(
-                          Icons.qr_code_scanner,
-                          size: 48,
-                          color: AppTheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Scan Authenticator Code',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: AppTheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Align the QR code within the frame to automatically add a new TOTP entry.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.onSurfaceVariant,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 32),
-
-                        // Manual entry button
-                        ElevatedButton.icon(
-                          onPressed: onManualEntry,
-                          icon: const Icon(Icons.keyboard, size: 18),
-                          label: const Text('Manual Entry'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.surfaceContainer,
-                            foregroundColor: AppTheme.primary,
-                            elevation: 0,
-                            side: const BorderSide(
-                              color: AppTheme.outlineVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -194,11 +135,11 @@ class QRScannerScreen extends StatelessWidget {
               child: Align(
                 alignment: Alignment.topRight,
                 child: CircleAvatar(
-                  backgroundColor: AppTheme.background.withValues(alpha: 0.6),
+                  backgroundColor: Colors.black38,
                   child: IconButton(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close),
-                    color: AppTheme.onSurface,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -210,76 +151,105 @@ class QRScannerScreen extends StatelessWidget {
   }
 }
 
-class _CornerBracket extends StatelessWidget {
-  const _CornerBracket({required this.borderRadius, required this.shadows});
+/// Shown when the camera cannot start (web/desktop without camera).
+class _CameraUnavailable extends StatelessWidget {
+  const _CameraUnavailable({this.onManualEntry});
 
-  final BorderRadius borderRadius;
-  final List<BoxShadow> shadows;
+  final VoidCallback? onManualEntry;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceContainerHighest,
-        borderRadius: borderRadius,
-        boxShadow: shadows,
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.no_photography_outlined,
+                size: 64,
+                color: AppTheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Camera not available',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppTheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Use manual entry instead to paste your setup key.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: onManualEntry,
+                icon: const Icon(Icons.keyboard, size: 18),
+                label: const Text('Manual Entry'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class _ScanLine extends StatefulWidget {
-  const _ScanLine();
-
+/// Draws the scan-frame corner brackets.
+class _ViewfinderPainter extends CustomPainter {
   @override
-  State<_ScanLine> createState() => _ScanLineState();
-}
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppTheme.primary
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
 
-class _ScanLineState extends State<_ScanLine>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    const corner = 32.0;
+    final s = size;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Positioned(
-          top: _controller.value * 280,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 2,
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withValues(alpha: 0.8),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.primary.withValues(alpha: 0.5),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    // Top-left
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, corner)
+        ..lineTo(0, 0)
+        ..lineTo(corner, 0),
+      paint,
+    );
+    // Top-right
+    canvas.drawPath(
+      Path()
+        ..moveTo(s.width - corner, 0)
+        ..lineTo(s.width, 0)
+        ..lineTo(s.width, corner),
+      paint,
+    );
+    // Bottom-left
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, s.height - corner)
+        ..lineTo(0, s.height)
+        ..lineTo(corner, s.height),
+      paint,
+    );
+    // Bottom-right
+    canvas.drawPath(
+      Path()
+        ..moveTo(s.width - corner, s.height)
+        ..lineTo(s.width, s.height)
+        ..lineTo(s.width, s.height - corner),
+      paint,
     );
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

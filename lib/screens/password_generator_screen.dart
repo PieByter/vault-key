@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import '../theme/app_theme.dart';
 import '../widgets/strength_bar.dart';
 
@@ -14,27 +18,98 @@ class PasswordGeneratorScreen extends StatefulWidget {
 }
 
 class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
-  String _generatedPassword = 'Yx9\$kP2#mN5*qR8';
+  String _generatedPassword = '';
   double _length = 16;
   bool _uppercase = true;
   bool _lowercase = true;
   bool _numbers = true;
   bool _symbols = true;
 
+  final _history = <String>[];
+
+  static const _upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  static const _lower = 'abcdefghijklmnopqrstuvwxyz';
+  static const _digits = '0123456789';
+  static const _symbolsChars = '!@#\$%^&*()-_=+[]{};:,.<>?';
+
+  final _random = Random.secure();
+
+  @override
+  void initState() {
+    super.initState();
+    _regenerate();
+  }
+
   int get _strength {
+    final length = _length.round();
     int score = 0;
-    if (_uppercase) score++;
-    if (_lowercase) score++;
-    if (_numbers) score++;
-    if (_symbols) score++;
+    var pools = 0;
+    if (_uppercase) pools++;
+    if (_lowercase) pools++;
+    if (_numbers) pools++;
+    if (_symbols) pools++;
+
+    if (pools >= 3) score++;
+    if (length >= 12) score++;
+    if (length >= 16) score++;
+    if (pools == 4 && length >= 16) score++;
     return score.clamp(1, 4);
   }
 
+  /// Generate a cryptographically-strong password.
   void _regenerate() {
-    // Placeholder — wire to actual generator
+    final length = _length.round();
+    final pools = <String>[
+      if (_uppercase) _upper,
+      if (_lowercase) _lower,
+      if (_numbers) _digits,
+      if (_symbols) _symbolsChars,
+    ];
+    if (pools.isEmpty) {
+      setState(() => _generatedPassword = '');
+      return;
+    }
+
+    final buffer = StringBuffer();
+    // Guarantee at least one char from each selected pool
+    for (final pool in pools) {
+      buffer.write(pool[_random.nextInt(pool.length)]);
+    }
+    // Fill the rest randomly
+    final all = pools.join();
+    while (buffer.length < length) {
+      buffer.write(all[_random.nextInt(all.length)]);
+    }
+    // Shuffle to avoid a predictable pattern
+    final chars = buffer.toString().split('');
+    for (var i = chars.length - 1; i > 0; i--) {
+      final j = _random.nextInt(i + 1);
+      final tmp = chars[i];
+      chars[i] = chars[j];
+      chars[j] = tmp;
+    }
+
+    final result = chars.join();
     setState(() {
-      _generatedPassword = 'Xy7#mK2!pQ9\$rL4';
+      _generatedPassword = result;
+      if (!_history.contains(result)) {
+        _history.insert(0, result);
+        if (_history.length > 5) _history.removeLast();
+      }
     });
+  }
+
+  void _copyPassword() {
+    if (_generatedPassword.isEmpty) return;
+    Clipboard.setData(ClipboardData(text: _generatedPassword));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Password copied'),
+        backgroundColor: AppTheme.primary,
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -125,7 +200,7 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: _copyPassword,
                               icon: const Icon(Icons.content_copy, size: 20),
                               color: AppTheme.onSurfaceVariant,
                             ),
@@ -181,6 +256,7 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
                         activeColor: AppTheme.primary,
                         inactiveColor: AppTheme.surfaceContainerHigh,
                         onChanged: (v) => setState(() => _length = v),
+                        onChangeEnd: (_) => _regenerate(),
                       ),
                       const SizedBox(height: 16),
 
@@ -188,22 +264,34 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
                       _ToggleRow(
                         label: 'Uppercase (A-Z)',
                         value: _uppercase,
-                        onChanged: (v) => setState(() => _uppercase = v),
+                        onChanged: (v) {
+                          setState(() => _uppercase = v);
+                          _regenerate();
+                        },
                       ),
                       _ToggleRow(
                         label: 'Lowercase (a-z)',
                         value: _lowercase,
-                        onChanged: (v) => setState(() => _lowercase = v),
+                        onChanged: (v) {
+                          setState(() => _lowercase = v);
+                          _regenerate();
+                        },
                       ),
                       _ToggleRow(
                         label: 'Numbers (0-9)',
                         value: _numbers,
-                        onChanged: (v) => setState(() => _numbers = v),
+                        onChanged: (v) {
+                          setState(() => _numbers = v);
+                          _regenerate();
+                        },
                       ),
                       _ToggleRow(
                         label: 'Symbols (!@#...)',
                         value: _symbols,
-                        onChanged: (v) => setState(() => _symbols = v),
+                        onChanged: (v) {
+                          setState(() => _symbols = v);
+                          _regenerate();
+                        },
                       ),
                       const SizedBox(height: 24),
 
@@ -219,9 +307,13 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          _HistoryChip('Yx9\$kP2#mN5*qR8'),
-                          _HistoryChip('Ab3@xK9!mP2#rL7'),
-                          _HistoryChip('Zq1#wE5\$tY8*uJ4'),
+                          for (final p in _history)
+                            _HistoryChip(
+                              p,
+                              onTap: () => setState(() {
+                                _generatedPassword = p;
+                              }),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 32),
@@ -284,19 +376,21 @@ class _ToggleRow extends StatelessWidget {
 }
 
 class _HistoryChip extends StatelessWidget {
-  const _HistoryChip(this.password);
+  const _HistoryChip(this.password, {this.onTap});
 
   final String password;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
+    return ActionChip(
       label: Text(
         password,
         style: Theme.of(
           context,
         ).textTheme.bodySmall?.copyWith(color: AppTheme.onSurfaceVariant),
       ),
+      onPressed: onTap,
       backgroundColor: AppTheme.surfaceContainer,
       side: BorderSide.none,
     );

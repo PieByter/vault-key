@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/category.dart';
+import '../models/credential.dart';
 import '../theme/app_theme.dart';
 import '../providers/providers.dart';
 
@@ -44,12 +50,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _SettingsCard(
               children: [
                 _SwitchTile(
+                  icon: Icons.dark_mode_outlined,
+                  label: 'Dark Theme',
+                  value: AppTheme.isDark,
+                  onChanged: (v) {
+                    AppTheme.isDark = v;
+                    ref.read(themeModeProvider.notifier).state = v
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
+                    ref.read(databaseServiceProvider).setDarkModeEnabled(v);
+                  },
+                ),
+                Divider(color: AppTheme.outlineVariant, height: 1),
+                _SwitchTile(
                   icon: Icons.fingerprint,
                   label: 'Biometric Unlock',
                   value: state.biometricEnabled,
                   onChanged: (v) => notifier.setBiometricEnabled(v),
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _SwitchTile(
                   icon: Icons.content_paste_off_outlined,
                   label: 'Clear Clipboard',
@@ -57,7 +76,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   value: state.clipboardClear,
                   onChanged: (v) => notifier.setClipboardClearEnabled(v),
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _SliderTile(
                   icon: Icons.lock_clock_outlined,
                   label: 'Auto-Lock',
@@ -88,15 +107,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 _ActionTile(
                   icon: Icons.download_outlined,
                   label: 'Export Vault',
-                  onTap: () {},
+                  subtitle: 'Backup as JSON',
+                  onTap: () => _exportVault(context),
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _ActionTile(
                   icon: Icons.upload_outlined,
                   label: 'Import Vault',
-                  onTap: () {},
+                  subtitle: 'Restore from JSON backup',
+                  onTap: () => _importVault(context),
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _ActionTile(
                   icon: Icons.delete_outline,
                   label: 'Clear All Data',
@@ -115,13 +136,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   label: 'Version',
                   value: '1.0.0',
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _ActionTile(
                   icon: Icons.description_outlined,
                   label: 'Privacy Policy',
                   onTap: () {},
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _ActionTile(
                   icon: Icons.help_outline,
                   label: 'Help & Support',
@@ -141,7 +162,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       : 'Last sync: just now',
                   onTap: () => notifier.manualSync(),
                 ),
-                const Divider(color: AppTheme.outlineVariant, height: 1),
+                Divider(color: AppTheme.outlineVariant, height: 1),
                 _ActionTile(
                   icon: Icons.logout,
                   label: 'Log Out',
@@ -176,6 +197,197 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
       builder: (ctx) => _FolderManager(categories: categories),
     );
+  }
+
+  // ── Export / Import ───────────────────────────────────────────────────
+
+  /// Export all credentials as a JSON backup file.
+  Future<void> _exportVault(BuildContext context) async {
+    final credentials = ref.read(appStateProvider).credentials;
+    final user = ref.read(authRepositoryProvider).currentUser;
+
+    final payload = {
+      'app': 'vault_key',
+      'version': 1,
+      'exportedAt': DateTime.now().toIso8601String(),
+      if (user != null) 'userEmail': user.email,
+      'items': [
+        for (final c in credentials)
+          if (!c.isDeleted)
+            {
+              'id': c.id,
+              'name': c.name,
+              'username': c.username,
+              'password': c.password, // plaintext — warn the user
+              'url': c.url,
+              'totpSecret': c.totpSecret,
+              'notes': c.notes,
+              'categoryId': c.categoryId,
+              'tags': c.tags,
+              'createdAt': c.createdAt.toIso8601String(),
+              'updatedAt': c.updatedAt.toIso8601String(),
+            },
+      ],
+    };
+
+    final json = const JsonEncoder.withIndent('  ').convert(payload);
+
+    if (!mounted) return;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: AppTheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Export Vault', style: Theme.of(ctx).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Text(
+                '${(json.length / 1024).toStringAsFixed(1)} KB · '
+                '${credentials.length} items',
+                style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () async {
+                  await FileSaver.instance.saveFile(
+                    name:
+                        'vault_backup_${DateTime.now().millisecondsSinceEpoch}',
+                    bytes: Uint8List.fromList(utf8.encode(json)),
+                    fileExtension: 'json',
+                    mimeType: MimeType.json,
+                  );
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+                icon: const Icon(Icons.download),
+                label: const Text('Download .json'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: json));
+                  if (ctx.mounted) Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('JSON copied to clipboard'),
+                      backgroundColor: AppTheme.primary,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.copy),
+                label: const Text('Copy JSON'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Import credentials from a JSON backup (paste into dialog).
+  Future<void> _importVault(BuildContext context) async {
+    final controller = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        title: const Text('Import Vault'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: controller,
+              maxLines: 8,
+              decoration: const InputDecoration(
+                hintText: 'Paste the vault JSON here…',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Import'),
+          ),
+        ],
+      ),
+    );
+    final text = controller.text.trim();
+    controller.dispose();
+    if (ok != true || text.isEmpty || !mounted) return;
+
+    try {
+      final decoded = jsonDecode(text) as Map<String, dynamic>;
+      final items = (decoded['items'] as List? ?? [])
+          .cast<Map<String, dynamic>>();
+
+      final notifier = ref.read(appStateProvider.notifier);
+      final user = ref.read(authRepositoryProvider).currentUser;
+      if (user == null) return;
+
+      var count = 0;
+      for (final item in items) {
+        final id = item['id'] as String? ?? const Uuid().v4();
+        // Skip items that already exist
+        if (ref.read(credentialRepositoryProvider).getById(id) != null) {
+          continue;
+        }
+        final now = DateTime.now();
+        await notifier.addCredential(
+          Credential(
+            id: id,
+            userId: user.uid,
+            type: CredentialType.login,
+            name: item['name'] as String? ?? 'Imported',
+            url: item['url'] as String?,
+            username: item['username'] as String? ?? '',
+            password: item['password'] as String? ?? '',
+            totpSecret: item['totpSecret'] as String?,
+            notes: item['notes'] as String?,
+            categoryId: item['categoryId'] as String?,
+            tags: (item['tags'] as List?)?.cast<String>() ?? const [],
+            createdAt:
+                DateTime.tryParse(item['createdAt'] as String? ?? '') ?? now,
+            updatedAt:
+                DateTime.tryParse(item['updatedAt'] as String? ?? '') ?? now,
+          ),
+        );
+        count++;
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Imported $count items'),
+            backgroundColor: AppTheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Import failed: invalid JSON'),
+            backgroundColor: AppTheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -213,7 +425,7 @@ class _FolderManagerState extends ConsumerState<_FolderManager> {
                   Text('Manage Folders', style: theme.textTheme.titleMedium),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.add_circle_outline,
                       color: AppTheme.primary,
                     ),
@@ -223,7 +435,7 @@ class _FolderManagerState extends ConsumerState<_FolderManager> {
                 ],
               ),
             ),
-            const Divider(color: AppTheme.outlineVariant),
+            Divider(color: AppTheme.outlineVariant),
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -244,7 +456,7 @@ class _FolderManagerState extends ConsumerState<_FolderManager> {
                       ),
                     ),
                     subtitle: cat.isSystem
-                        ? const Text(
+                        ? Text(
                             'Built-in',
                             style: TextStyle(
                               color: AppTheme.onSurfaceVariant,
@@ -255,7 +467,7 @@ class _FolderManagerState extends ConsumerState<_FolderManager> {
                     trailing: cat.isSystem
                         ? null
                         : PopupMenuButton<String>(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.more_horiz,
                               size: 20,
                               color: AppTheme.onSurfaceVariant,
@@ -264,7 +476,7 @@ class _FolderManagerState extends ConsumerState<_FolderManager> {
                               if (action == 'rename') _renameFolder(cat);
                               if (action == 'delete') _deleteFolder(cat);
                             },
-                            itemBuilder: (_) => const [
+                            itemBuilder: (_) => [
                               PopupMenuItem(
                                 value: 'rename',
                                 child: Text('Rename'),

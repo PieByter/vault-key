@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../theme/app_theme.dart';
@@ -40,6 +41,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
   int _passwordStrength = 0;
   String? _selectedCategoryId;
   final List<String> _tags = [];
+  List<String> _passwordHistory = const [];
 
   @override
   void initState() {
@@ -58,6 +60,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
         _notesController.text = existing.notes ?? '';
         _selectedCategoryId = existing.categoryId;
         _tags.addAll(existing.tags);
+        _passwordHistory = existing.passwordHistory;
         _updateStrength(existing.password);
       }
     }
@@ -92,7 +95,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
 
     if (user == null) {
       messenger.showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Not logged in.'),
           backgroundColor: AppTheme.error,
           behavior: SnackBarBehavior.floating,
@@ -104,7 +107,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
     final name = _itemNameController.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Item name is required.'),
           backgroundColor: AppTheme.error,
           behavior: SnackBarBehavior.floating,
@@ -140,6 +143,13 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
           notes: notes,
           categoryId: _selectedCategoryId,
           tags: List.unmodifiable(_tags),
+          // Keep the last 5 passwords for history
+          passwordHistory:
+              _passwordController.text.isNotEmpty &&
+                  c.password.isNotEmpty &&
+                  _passwordController.text != c.password
+              ? [c.password, ...c.passwordHistory.take(4)]
+              : c.passwordHistory,
         ),
       );
     } else {
@@ -183,7 +193,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
   ) async {
     if (categories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('No folders yet. Create one in Settings.'),
           backgroundColor: AppTheme.error,
           behavior: SnackBarBehavior.floating,
@@ -215,16 +225,13 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                 children: [
                   for (final cat in categories)
                     ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.folder_outlined,
                         color: AppTheme.primary,
                       ),
                       title: Text(cat.name),
                       trailing: cat.id == _selectedCategoryId
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: AppTheme.primary,
-                            )
+                          ? Icon(Icons.check_circle, color: AppTheme.primary)
                           : null,
                       onTap: () => Navigator.pop(ctx, cat),
                     ),
@@ -367,13 +374,31 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                       ),
                       const SizedBox(width: 8),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          var url = _urlController.text.trim();
+                          if (url.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Enter a URL first.'),
+                                backgroundColor: AppTheme.error,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            return;
+                          }
+                          if (!url.startsWith('http://') &&
+                              !url.startsWith('https://')) {
+                            url = 'https://$url';
+                          }
+                          await launchUrl(Uri.parse(url));
+                        },
                         icon: const Icon(Icons.open_in_new, size: 20),
                         color: AppTheme.onSurfaceVariant,
+                        tooltip: 'Open website',
                       ),
                     ],
                   ),
-                  const Divider(color: AppTheme.outlineVariant, height: 24),
+                  Divider(color: AppTheme.outlineVariant, height: 24),
 
                   // Username
                   _Label('Username / Email'),
@@ -394,7 +419,7 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                       ),
                     ],
                   ),
-                  const Divider(color: AppTheme.outlineVariant, height: 24),
+                  Divider(color: AppTheme.outlineVariant, height: 24),
 
                   // Password
                   _Label('Password'),
@@ -518,6 +543,17 @@ class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
                     ),
                   ],
                 ),
+                if (_passwordHistory.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  _Label('Password History'),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final old in _passwordHistory) _TagChip(label: old),
+                    ],
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 32),
@@ -590,7 +626,7 @@ class _VaultPicker extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
-              const Icon(Icons.folder, size: 20, color: AppTheme.secondary),
+              Icon(Icons.folder, size: 20, color: AppTheme.secondary),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -601,7 +637,7 @@ class _VaultPicker extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.expand_more,
                 size: 20,
                 color: AppTheme.onSurfaceVariant,

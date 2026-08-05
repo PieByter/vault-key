@@ -94,7 +94,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                             ),
                           ],
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.lock,
                           size: 48,
                           color: AppTheme.primary,
@@ -151,7 +151,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                             ),
                           ),
                           child: widget.isLoading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
@@ -174,7 +174,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                       // Biometric fallback
                       IconButton(
                         onPressed: widget.onBiometricUnlock,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.fingerprint,
                           size: 32,
                           color: AppTheme.onSurfaceVariant,

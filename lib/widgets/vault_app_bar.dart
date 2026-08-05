@@ -56,7 +56,7 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Image.asset(
                       'assets/brand/logo.png',
                       height: 32,
-                      errorBuilder: (_, _, _) => const Icon(
+                      errorBuilder: (_, _, _) => Icon(
                         Icons.shield_outlined,
                         color: AppTheme.primary,
                         size: 28,
@@ -85,7 +85,7 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
                         'assets/images/profile.png',
                       ),
                       onBackgroundImageError: (_, _) {},
-                      child: const Icon(
+                      child: Icon(
                         Icons.person_outline,
                         size: 18,
                         color: AppTheme.onSurfaceVariant,

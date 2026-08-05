@@ -2,69 +2,121 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// VaultKey design system — Material 3 dark theme.
+/// VaultKey design system — Material 3 theme (dark & light).
 ///
 /// Tokens extracted from stitch_vaultkey_secure_password_manager prototypes.
+/// Switch palettes at runtime by setting [isDark].
 class AppTheme {
   AppTheme._();
 
+  /// Current palette: dark by default. Toggled at runtime.
+  static bool isDark = true;
+
+  static Color _t(Color dark, Color light) => isDark ? dark : light;
+
   // --------------------------------------------------------------------------
-  // Colors
+  // Colors (dark / light pairs)
   // --------------------------------------------------------------------------
 
-  static const Color background = Color(0xFF0e131f);
-  static const Color surface = Color(0xFF0e131f);
-  static const Color surfaceDim = Color(0xFF0e131f);
-  static const Color surfaceBright = Color(0xFF343946);
-  static const Color surfaceContainerLowest = Color(0xFF090e1a);
-  static const Color surfaceContainerLow = Color(0xFF161b28);
-  static const Color surfaceContainer = Color(0xFF1a1f2c);
-  static const Color surfaceContainerHigh = Color(0xFF252a37);
-  static const Color surfaceContainerHighest = Color(0xFF303542);
-  static const Color onSurface = Color(0xFFdee2f3);
-  static const Color onSurfaceVariant = Color(0xFFc2c6d6);
-  static const Color inverseSurface = Color(0xFFdee2f3);
-  static const Color inverseOnSurface = Color(0xFF2b303d);
-  static const Color outline = Color(0xFF8c909f);
-  static const Color outlineVariant = Color(0xFF424754);
-  static const Color surfaceTint = Color(0xFFadc6ff);
-  static const Color surfaceVariant = Color(0xFF303542);
+  static Color get background =>
+      _t(const Color(0xFF0e131f), const Color(0xFFF1F4FB));
+  static Color get surface =>
+      _t(const Color(0xFF0e131f), const Color(0xFFF7F9FE));
+  static Color get surfaceDim =>
+      _t(const Color(0xFF0e131f), const Color(0xFFD9DEE8));
+  static Color get surfaceBright =>
+      _t(const Color(0xFF343946), const Color(0xFFF7F9FE));
+  static Color get surfaceContainerLowest =>
+      _t(const Color(0xFF090e1a), const Color(0xFFFFFFFF));
+  static Color get surfaceContainerLow =>
+      _t(const Color(0xFF161b28), const Color(0xFFF1F4FB));
+  static Color get surfaceContainer =>
+      _t(const Color(0xFF1a1f2c), const Color(0xFFE9EDF6));
+  static Color get surfaceContainerHigh =>
+      _t(const Color(0xFF252a37), const Color(0xFFE3E8F2));
+  static Color get surfaceContainerHighest =>
+      _t(const Color(0xFF303542), const Color(0xFFDDE2EE));
+  static Color get onSurface =>
+      _t(const Color(0xFFdee2f3), const Color(0xFF1A2233));
+  static Color get onSurfaceVariant =>
+      _t(const Color(0xFFc2c6d6), const Color(0xFF4C5568));
+  static Color get inverseSurface =>
+      _t(const Color(0xFFdee2f3), const Color(0xFF1A2233));
+  static Color get inverseOnSurface =>
+      _t(const Color(0xFF2b303d), const Color(0xFFF1F4FB));
+  static Color get outline =>
+      _t(const Color(0xFF8c909f), const Color(0xFF747C90));
+  static Color get outlineVariant =>
+      _t(const Color(0xFF424754), const Color(0xFFC3CAD8));
+  static Color get surfaceTint =>
+      _t(const Color(0xFFadc6ff), const Color(0xFF2E5BD6));
+  static Color get surfaceVariant =>
+      _t(const Color(0xFF303542), const Color(0xFFDDE2EE));
 
-  static const Color primary = Color(0xFFadc6ff);
-  static const Color onPrimary = Color(0xFF002e6a);
-  static const Color primaryContainer = Color(0xFF4d8eff);
-  static const Color onPrimaryContainer = Color(0xFF00285d);
-  static const Color inversePrimary = Color(0xFF005ac2);
+  static Color get primary =>
+      _t(const Color(0xFFadc6ff), const Color(0xFF2E5BD6));
+  static Color get onPrimary =>
+      _t(const Color(0xFF002e6a), const Color(0xFFFFFFFF));
+  static Color get primaryContainer =>
+      _t(const Color(0xFF4d8eff), const Color(0xFF4D8EFF));
+  static Color get onPrimaryContainer =>
+      _t(const Color(0xFF00285d), const Color(0xFF0B2E6E));
+  static Color get inversePrimary =>
+      _t(const Color(0xFF005ac2), const Color(0xFFADC6FF));
 
-  static const Color secondary = Color(0xFF4edea3);
-  static const Color onSecondary = Color(0xFF003824);
-  static const Color secondaryContainer = Color(0xFF00a572);
-  static const Color onSecondaryContainer = Color(0xFF00311f);
+  static Color get secondary =>
+      _t(const Color(0xFF4edea3), const Color(0xFF00875A));
+  static Color get onSecondary =>
+      _t(const Color(0xFF003824), const Color(0xFFFFFFFF));
+  static Color get secondaryContainer =>
+      _t(const Color(0xFF00a572), const Color(0xFF9EF2CC));
+  static Color get onSecondaryContainer =>
+      _t(const Color(0xFF00311f), const Color(0xFF00381F));
 
-  static const Color tertiary = Color(0xFFffb95f);
-  static const Color onTertiary = Color(0xFF472a00);
-  static const Color tertiaryContainer = Color(0xFFca8100);
-  static const Color onTertiaryContainer = Color(0xFF3e2400);
+  static Color get tertiary =>
+      _t(const Color(0xFFffb95f), const Color(0xFFB46B00));
+  static Color get onTertiary =>
+      _t(const Color(0xFF472a00), const Color(0xFFFFFFFF));
+  static Color get tertiaryContainer =>
+      _t(const Color(0xFFca8100), const Color(0xFFFFDDB3));
+  static Color get onTertiaryContainer =>
+      _t(const Color(0xFF3e2400), const Color(0xFF4A2A00));
 
-  static const Color error = Color(0xFFffb4ab);
-  static const Color onError = Color(0xFF690005);
-  static const Color errorContainer = Color(0xFF93000a);
-  static const Color onErrorContainer = Color(0xFFffdad6);
+  static Color get error =>
+      _t(const Color(0xFFffb4ab), const Color(0xFFBA1A1A));
+  static Color get onError =>
+      _t(const Color(0xFF690005), const Color(0xFFFFFFFF));
+  static Color get errorContainer =>
+      _t(const Color(0xFF93000a), const Color(0xFFFFDAD6));
+  static Color get onErrorContainer =>
+      _t(const Color(0xFFffdad6), const Color(0xFF410002));
 
-  static const Color primaryFixed = Color(0xFFd8e2ff);
-  static const Color primaryFixedDim = Color(0xFFadc6ff);
-  static const Color onPrimaryFixed = Color(0xFF001a42);
-  static const Color onPrimaryFixedVariant = Color(0xFF004395);
+  static Color get primaryFixed =>
+      _t(const Color(0xFFd8e2ff), const Color(0xFFD8E2FF));
+  static Color get primaryFixedDim =>
+      _t(const Color(0xFFadc6ff), const Color(0xFFADC6FF));
+  static Color get onPrimaryFixed =>
+      _t(const Color(0xFF001a42), const Color(0xFF001A42));
+  static Color get onPrimaryFixedVariant =>
+      _t(const Color(0xFF004395), const Color(0xFF004395));
 
-  static const Color secondaryFixed = Color(0xFF6ffbbe);
-  static const Color secondaryFixedDim = Color(0xFF4edea3);
-  static const Color onSecondaryFixed = Color(0xFF002113);
-  static const Color onSecondaryFixedVariant = Color(0xFF005236);
+  static Color get secondaryFixed =>
+      _t(const Color(0xFF6ffbbe), const Color(0xFF6FFBBE));
+  static Color get secondaryFixedDim =>
+      _t(const Color(0xFF4edea3), const Color(0xFF4EDEA3));
+  static Color get onSecondaryFixed =>
+      _t(const Color(0xFF002113), const Color(0xFF002113));
+  static Color get onSecondaryFixedVariant =>
+      _t(const Color(0xFF005236), const Color(0xFF005236));
 
-  static const Color tertiaryFixed = Color(0xFFffddb8);
-  static const Color tertiaryFixedDim = Color(0xFFffb95f);
-  static const Color onTertiaryFixed = Color(0xFF2a1700);
-  static const Color onTertiaryFixedVariant = Color(0xFF653e00);
+  static Color get tertiaryFixed =>
+      _t(const Color(0xFFffddb8), const Color(0xFFFFDDB8));
+  static Color get tertiaryFixedDim =>
+      _t(const Color(0xFFffb95f), const Color(0xFFFFB95F));
+  static Color get onTertiaryFixed =>
+      _t(const Color(0xFF2a1700), const Color(0xFF2A1700));
+  static Color get onTertiaryFixedVariant =>
+      _t(const Color(0xFF653e00), const Color(0xFF653E00));
 
   // --------------------------------------------------------------------------
   // Typography
@@ -136,15 +188,15 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: primary, width: 1),
+        borderSide: BorderSide(color: primary, width: 1),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: error, width: 1),
+        borderSide: BorderSide(color: error, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: error, width: 1),
+        borderSide: BorderSide(color: error, width: 1),
       ),
       hintStyle: textTheme.bodyMedium?.copyWith(
         color: onSurfaceVariant.withValues(alpha: 0.5),
@@ -186,7 +238,7 @@ class AppTheme {
       style:
           OutlinedButton.styleFrom(
             foregroundColor: primary,
-            side: const BorderSide(color: surfaceContainerHighest),
+            side: BorderSide(color: surfaceContainerHighest),
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             textStyle: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
@@ -267,8 +319,8 @@ class AppTheme {
       scrolledUnderElevation: 0,
       centerTitle: false,
       titleTextStyle: textTheme.headlineMedium?.copyWith(color: onSurface),
-      iconTheme: const IconThemeData(color: onSurfaceVariant),
-      actionsIconTheme: const IconThemeData(color: onSurfaceVariant),
+      iconTheme: IconThemeData(color: onSurfaceVariant),
+      actionsIconTheme: IconThemeData(color: onSurfaceVariant),
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
@@ -287,7 +339,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: const ColorScheme(
+      colorScheme: ColorScheme(
         brightness: Brightness.dark,
         primary: primary,
         onPrimary: onPrimary,
@@ -337,7 +389,70 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
-      iconTheme: const IconThemeData(color: onSurfaceVariant),
+      iconTheme: IconThemeData(color: onSurfaceVariant),
+      splashColor: primary.withValues(alpha: 0.1),
+      highlightColor: primary.withValues(alpha: 0.05),
+    );
+  }
+
+  /// Light theme (same design tokens, light palette).
+  static ThemeData lightTheme(BuildContext context) {
+    final textTheme = _textTheme(context);
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: ColorScheme(
+        brightness: Brightness.light,
+        primary: primary,
+        onPrimary: onPrimary,
+        primaryContainer: primaryContainer,
+        onPrimaryContainer: onPrimaryContainer,
+        secondary: secondary,
+        onSecondary: onSecondary,
+        secondaryContainer: secondaryContainer,
+        onSecondaryContainer: onSecondaryContainer,
+        tertiary: tertiary,
+        onTertiary: onTertiary,
+        tertiaryContainer: tertiaryContainer,
+        onTertiaryContainer: onTertiaryContainer,
+        error: error,
+        onError: onError,
+        errorContainer: errorContainer,
+        onErrorContainer: onErrorContainer,
+        surface: surface,
+        onSurface: onSurface,
+        surfaceContainerHighest: surfaceContainerHighest,
+        surfaceContainerHigh: surfaceContainerHigh,
+        surfaceContainer: surfaceContainer,
+        surfaceContainerLow: surfaceContainerLow,
+        surfaceContainerLowest: surfaceContainerLowest,
+        surfaceBright: surfaceBright,
+        surfaceDim: surfaceDim,
+        outline: outline,
+        outlineVariant: outlineVariant,
+        inverseSurface: inverseSurface,
+        inversePrimary: inversePrimary,
+        shadow: Colors.black26,
+        scrim: const Color(0x66000000),
+      ),
+      scaffoldBackgroundColor: background,
+      textTheme: textTheme,
+      inputDecorationTheme: _inputDecorationTheme(textTheme),
+      elevatedButtonTheme: _elevatedButtonTheme(textTheme),
+      outlinedButtonTheme: _outlinedButtonTheme(textTheme),
+      textButtonTheme: _textButtonTheme(textTheme),
+      cardTheme: _cardTheme(),
+      chipTheme: _chipTheme(textTheme),
+      bottomSheetTheme: _bottomSheetTheme(),
+      floatingActionButtonTheme: _fabTheme(),
+      appBarTheme: _appBarTheme(textTheme),
+      dividerTheme: DividerThemeData(
+        color: outlineVariant,
+        thickness: 1,
+        space: 1,
+      ),
+      iconTheme: IconThemeData(color: onSurfaceVariant),
       splashColor: primary.withValues(alpha: 0.1),
       highlightColor: primary.withValues(alpha: 0.05),
     );

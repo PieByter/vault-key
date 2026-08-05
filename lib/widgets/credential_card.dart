@@ -9,12 +9,12 @@ import '../theme/app_theme.dart';
 /// - Copy + overflow actions
 /// - Hover shimmer effect
 class CredentialCard extends StatelessWidget {
-  const CredentialCard({
+  CredentialCard({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-    this.iconColor = AppTheme.primary,
+    this.iconColor,
     this.onCopy,
     this.onMore,
     this.onTap,
@@ -23,7 +23,7 @@ class CredentialCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color iconColor;
+  final Color? iconColor;
   final VoidCallback? onCopy;
   final VoidCallback? onMore;
   final VoidCallback? onTap;
@@ -67,7 +67,11 @@ class CredentialCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(icon, size: 24, color: iconColor),
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: iconColor ?? AppTheme.primary,
+                ),
               ),
               const SizedBox(width: 16),
 

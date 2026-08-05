@@ -14,6 +14,7 @@ class Credential {
   final String? notes; // encrypted
   final String? categoryId;
   final List<String> tags;
+  final List<String> passwordHistory;
   final bool isFavorite;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -31,6 +32,7 @@ class Credential {
     this.notes,
     this.categoryId,
     this.tags = const [],
+    this.passwordHistory = const [],
     this.isFavorite = false,
     required this.createdAt,
     required this.updatedAt,
@@ -49,6 +51,7 @@ class Credential {
     String? notes,
     String? categoryId,
     List<String>? tags,
+    List<String>? passwordHistory,
     bool? isFavorite,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -66,6 +69,7 @@ class Credential {
       notes: notes ?? this.notes,
       categoryId: categoryId ?? this.categoryId,
       tags: tags ?? this.tags,
+      passwordHistory: passwordHistory ?? this.passwordHistory,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -87,6 +91,8 @@ class Credential {
       notes: json['notes'] as String?,
       categoryId: json['categoryId'] as String?,
       tags: (json['tags'] as List?)?.cast<String>() ?? const [],
+      passwordHistory:
+          (json['passwordHistory'] as List?)?.cast<String>() ?? const [],
       isFavorite: json['isFavorite'] as bool? ?? false,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -108,6 +114,7 @@ class Credential {
       'notes': notes,
       'categoryId': categoryId,
       'tags': tags,
+      'passwordHistory': passwordHistory,
       'isFavorite': isFavorite,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
