@@ -9,6 +9,7 @@ import '../widgets/vault_app_bar.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/credential_card.dart';
 import 'add_edit_password_screen.dart';
+import 'trash_screen.dart';
 
 /// Main vault home with search, categories, and credential list.
 class VaultHomeScreen extends ConsumerStatefulWidget {
@@ -49,6 +50,19 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: const VaultAppBar(title: 'Vault'),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const TrashScreen()),
+        ),
+        backgroundColor: AppTheme.surfaceContainerHigh,
+        tooltip: 'Trash',
+        child: Icon(
+          Icons.delete_outline,
+          color: AppTheme.onSurfaceVariant,
+          size: 20,
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
           // Sticky search header
@@ -335,6 +349,17 @@ class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
                   _openUrl(cred.url!);
                 },
               ),
+            ListTile(
+              leading: Icon(
+                cred.isFavorite ? Icons.star : Icons.star_border,
+                color: cred.isFavorite ? AppTheme.tertiary : AppTheme.primary,
+              ),
+              title: Text(cred.isFavorite ? 'Unpin' : 'Pin to Top'),
+              onTap: () {
+                Navigator.pop(ctx);
+                ref.read(appStateProvider.notifier).toggleFavorite(cred.id);
+              },
+            ),
             Divider(color: AppTheme.outlineVariant, height: 1),
             ListTile(
               leading: Icon(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +122,45 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   label: 'Clear All Data',
                   iconColor: AppTheme.error,
                   labelColor: AppTheme.error,
-                  onTap: () {},
+                  onTap: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: AppTheme.surface,
+                        title: const Text('Clear all data?'),
+                        content: const Text(
+                          'This will permanently delete all vault items, '
+                          'including trashed ones. This cannot be undone.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: const Text('Cancel'),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppTheme.error,
+                            ),
+                            child: const Text('Clear Everything'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm != true || !context.mounted) return;
+                    await ref
+                        .read(appStateProvider.notifier)
+                        .clearAllCredentials();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('All data cleared.'),
+                          backgroundColor: AppTheme.error,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -233,7 +270,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final json = const JsonEncoder.withIndent('  ').convert(payload);
 
     if (!mounted) return;
-    final action = await showModalBottomSheet<String>(
+    await showModalBottomSheet<String>(
       context: context,
       backgroundColor: AppTheme.surface,
       shape: const RoundedRectangleBorder(
@@ -327,7 +364,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     final text = controller.text.trim();
     controller.dispose();
-    if (ok != true || text.isEmpty || !mounted) return;
+    if (ok != true || text.isEmpty || !context.mounted) return;
 
     try {
       final decoded = jsonDecode(text) as Map<String, dynamic>;
@@ -368,7 +405,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         count++;
       }
 
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Imported $count items'),
@@ -378,7 +415,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Import failed: invalid JSON'),

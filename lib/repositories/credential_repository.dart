@@ -117,6 +117,25 @@ class CredentialRepository {
     return true;
   }
 
+  /// Restore a soft-deleted credential.
+  Future<bool> restore(String id) async {
+    _requireSession();
+    final index = _credentials.indexWhere((c) => c.id == id && c.isDeleted);
+    if (index == -1) return false;
+    _credentials[index] = _credentials[index].copyWith(
+      isDeleted: false,
+      updatedAt: DateTime.now(),
+    );
+    await _trySync();
+    return true;
+  }
+
+  /// List of soft-deleted items (trash).
+  List<Credential> get trashedItems => [
+    for (final c in _credentials)
+      if (c.isDeleted) c,
+  ];
+
   /// Permanently remove from local cache and Firestore.
   Future<bool> permanentDelete(String id) async {
     _requireSession();
@@ -157,7 +176,8 @@ class CredentialRepository {
   }
 
   void _requireSession() {
-    if (!hasSession)
+    if (!hasSession) {
       throw StateError('No active session. Call setSession() first.');
+    }
   }
 }

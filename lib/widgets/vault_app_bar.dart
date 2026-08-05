@@ -16,12 +16,14 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showLogo = true,
     this.actions,
     this.bottom,
+    this.online = true,
   });
 
   final String? title;
   final bool showLogo;
   final List<Widget>? actions;
   final PreferredSizeWidget? bottom;
+  final bool online;
 
   @override
   Size get preferredSize =>
@@ -66,11 +68,23 @@ class VaultAppBar extends StatelessWidget implements PreferredSizeWidget {
                 : null,
             leadingWidth: showLogo ? 56 : null,
             title: title != null
-                ? Text(
-                    title!,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: AppTheme.onSurface,
-                    ),
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title!,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: AppTheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      CircleAvatar(
+                        radius: 4,
+                        backgroundColor: online
+                            ? AppTheme.secondary
+                            : AppTheme.error,
+                      ),
+                    ],
                   )
                 : null,
             actions:

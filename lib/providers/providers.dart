@@ -230,6 +230,48 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(searchQuery: query);
   }
 
+  // ── Favorites ────────────────────────────────────────────────────────
+
+  Future<void> toggleFavorite(String id) async {
+    await _credentialRepo.update(
+      id,
+      (c) => c.copyWith(isFavorite: !c.isFavorite),
+    );
+    state = state.copyWith(
+      credentials: _credentialRepo.all,
+      version: state.version + 1,
+    );
+  }
+
+  // ── Trash ───────────────────────────────────────────────────────────
+
+  Future<void> restoreCredential(String id) async {
+    await _credentialRepo.restore(id);
+    state = state.copyWith(
+      credentials: _credentialRepo.all,
+      version: state.version + 1,
+    );
+  }
+
+  Future<void> permanentlyDeleteCredential(String id) async {
+    await _credentialRepo.permanentDelete(id);
+    state = state.copyWith(
+      credentials: _credentialRepo.all,
+      version: state.version + 1,
+    );
+  }
+
+  Future<void> clearAllCredentials() async {
+    final allItems = [..._credentialRepo.all];
+    for (final c in allItems) {
+      await _credentialRepo.permanentDelete(c.id);
+    }
+    state = state.copyWith(
+      credentials: _credentialRepo.all,
+      version: state.version + 1,
+    );
+  }
+
   // ── Settings ───────────────────────────────────────────────────────────
 
   Future<void> setBiometricEnabled(bool enabled) async {

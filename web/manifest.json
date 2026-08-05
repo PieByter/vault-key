@@ -1,11 +1,11 @@
 {
-    "name": "vault_key",
-    "short_name": "vault_key",
+    "name": "VaultKey — Secure Password Manager",
+    "short_name": "VaultKey",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0e131f",
+    "theme_color": "#adc6ff",
+    "description": "Enterprise-grade zero-knowledge encrypted password manager with TOTP authenticator.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

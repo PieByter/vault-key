@@ -9,7 +9,7 @@ import '../theme/app_theme.dart';
 /// - Copy + overflow actions
 /// - Hover shimmer effect
 class CredentialCard extends StatelessWidget {
-  CredentialCard({
+  const CredentialCard({
     super.key,
     required this.icon,
     required this.title,
