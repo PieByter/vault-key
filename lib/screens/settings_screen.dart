@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+
+import '../models/category.dart';
 import '../theme/app_theme.dart';
 import '../providers/providers.dart';
 
@@ -64,6 +67,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   divisions: 29,
                   labelFormatter: (v) => '${v.round()} min',
                   onChanged: (v) => notifier.setAutoLockMinutes(v.round()),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _SectionHeader('Folders'),
+            _SettingsCard(
+              children: [
+                _ActionTile(
+                  icon: Icons.folder_outlined,
+                  label: 'Manage Folders',
+                  onTap: () => _openFolderManager(context),
                 ),
               ],
             ),
@@ -142,6 +156,249 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  // ── Folder Manager ────────────────────────────────────────────────────
+
+  void _openFolderManager(BuildContext context) {
+    final categories = ref
+        .watch(categoryRepositoryProvider)
+        .all
+        .where((c) => !c.isDeleted)
+        .toList();
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppTheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => _FolderManager(categories: categories),
+    );
+  }
+}
+
+/// Bottom-sheet folder manager: list, add, rename, delete.
+class _FolderManager extends ConsumerStatefulWidget {
+  const _FolderManager({required this.categories});
+  final List<CredentialCategory> categories;
+
+  @override
+  ConsumerState<_FolderManager> createState() => _FolderManagerState();
+}
+
+class _FolderManagerState extends ConsumerState<_FolderManager> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cats = ref
+        .watch(categoryRepositoryProvider)
+        .all
+        .where((c) => !c.isDeleted)
+        .toList();
+
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Row(
+                children: [
+                  Text('Manage Folders', style: theme.textTheme.titleMedium),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.add_circle_outline,
+                      color: AppTheme.primary,
+                    ),
+                    tooltip: 'Add folder',
+                    onPressed: _addFolder,
+                  ),
+                ],
+              ),
+            ),
+            const Divider(color: AppTheme.outlineVariant),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: cats.length,
+                itemBuilder: (_, i) {
+                  final cat = cats[i];
+                  return ListTile(
+                    leading: Icon(
+                      Icons.folder_outlined,
+                      color: cat.isSystem
+                          ? AppTheme.onSurfaceVariant.withValues(alpha: 0.4)
+                          : AppTheme.primary,
+                    ),
+                    title: Text(
+                      cat.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.onSurface,
+                      ),
+                    ),
+                    subtitle: cat.isSystem
+                        ? const Text(
+                            'Built-in',
+                            style: TextStyle(
+                              color: AppTheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          )
+                        : null,
+                    trailing: cat.isSystem
+                        ? null
+                        : PopupMenuButton<String>(
+                            icon: const Icon(
+                              Icons.more_horiz,
+                              size: 20,
+                              color: AppTheme.onSurfaceVariant,
+                            ),
+                            onSelected: (action) {
+                              if (action == 'rename') _renameFolder(cat);
+                              if (action == 'delete') _deleteFolder(cat);
+                            },
+                            itemBuilder: (_) => const [
+                              PopupMenuItem(
+                                value: 'rename',
+                                child: Text('Rename'),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(color: AppTheme.error),
+                                ),
+                              ),
+                            ],
+                          ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _addFolder() async {
+    final controller = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        title: const Text('New Folder'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => Navigator.pop(ctx, true),
+          decoration: const InputDecoration(hintText: 'Folder name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+    final name = controller.text.trim();
+    controller.dispose();
+    if (ok != true || name.isEmpty || !mounted) return;
+
+    final user = ref.read(authRepositoryProvider).currentUser;
+    if (user == null) return;
+
+    final now = DateTime.now();
+    await ref
+        .read(categoryRepositoryProvider)
+        .add(
+          CredentialCategory(
+            id: const Uuid().v4(),
+            userId: user.uid,
+            name: name,
+            sortOrder: 99,
+            isSystem: false,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+  }
+
+  Future<void> _renameFolder(CredentialCategory cat) async {
+    final controller = TextEditingController(text: cat.name);
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: cat.name.length,
+    );
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        title: const Text('Rename Folder'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => Navigator.pop(ctx, true),
+          decoration: const InputDecoration(hintText: 'New name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Rename'),
+          ),
+        ],
+      ),
+    );
+    final name = controller.text.trim();
+    controller.dispose();
+    if (ok != true || name.isEmpty || !mounted) return;
+
+    await ref.read(categoryRepositoryProvider).rename(cat.id, name);
+  }
+
+  Future<void> _deleteFolder(CredentialCategory cat) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        title: const Text('Delete folder?'),
+        content: Text(
+          '"${cat.name}" will be removed. Credentials in this folder '
+          'will become uncategorized.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    await ref.read(categoryRepositoryProvider).delete(cat.id);
   }
 }
 

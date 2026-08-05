@@ -77,6 +77,19 @@ class CategoryRepository {
     return true;
   }
 
+  /// Rename a custom category.
+  Future<bool> rename(String id, String newName) async {
+    final index = _categories.indexWhere((c) => c.id == id && !c.isSystem);
+    if (index == -1) return false;
+    _categories[index] = _categories[index].copyWith(
+      name: newName,
+      updatedAt: DateTime.now(),
+    );
+    await _save();
+    await _trySync();
+    return true;
+  }
+
   Future<void> _save() async {
     if (_userId == null) return;
     await _database.saveCategories(
