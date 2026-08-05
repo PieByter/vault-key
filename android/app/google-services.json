@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "377322946455",
+    "project_id": "vault-key-d0ad4",
+    "storage_bucket": "vault-key-d0ad4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377322946455:android:975cc3c2a62574d5ca8ed2",
+        "android_client_info": {
+          "package_name": "com.example.vault_key"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFfI9Lv5LzksanUEg6lMeyMsn0GBmHwMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

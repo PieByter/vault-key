@@ -4,10 +4,18 @@ import '../widgets/vault_input.dart';
 
 /// Unlock screen with master password + biometric fallback.
 class UnlockScreen extends StatefulWidget {
-  const UnlockScreen({super.key, this.onUnlock, this.onForgotPassword});
+  const UnlockScreen({
+    super.key,
+    this.onUnlock,
+    this.onBiometricUnlock,
+    this.onForgotPassword,
+    this.isLoading = false,
+  });
 
   final VoidCallback? onUnlock;
+  final VoidCallback? onBiometricUnlock;
   final VoidCallback? onForgotPassword;
+  final bool isLoading;
 
   @override
   State<UnlockScreen> createState() => _UnlockScreenState();
@@ -124,7 +132,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: widget.onUnlock,
+                          onPressed: widget.isLoading ? null : widget.onUnlock,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primary,
                             foregroundColor: AppTheme.onPrimary,
@@ -133,21 +141,30 @@ class _UnlockScreenState extends State<UnlockScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('Unlock Vault'),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.arrow_forward, size: 20),
-                            ],
-                          ),
+                          child: widget.isLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppTheme.onPrimary,
+                                  ),
+                                )
+                              : const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Unlock Vault'),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.arrow_forward, size: 20),
+                                  ],
+                                ),
                         ),
                       ),
                       const SizedBox(height: 24),
 
                       // Biometric fallback
                       IconButton(
-                        onPressed: () {},
+                        onPressed: widget.onBiometricUnlock,
                         icon: const Icon(
                           Icons.fingerprint,
                           size: 32,

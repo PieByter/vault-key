@@ -5,10 +5,16 @@ import '../widgets/strength_bar.dart';
 
 /// Sign Up screen with email, master password, confirm, and strength meter.
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key, this.onSignUp, this.onSignIn});
+  const SignUpScreen({
+    super.key,
+    this.onSignUp,
+    this.onSignIn,
+    this.isLoading = false,
+  });
 
-  final VoidCallback? onSignUp;
+  final void Function(String email, String password)? onSignUp;
   final VoidCallback? onSignIn;
+  final bool isLoading;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -235,8 +241,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // CTA
                 ElevatedButton(
-                  onPressed: _agreedToTerms ? widget.onSignUp : null,
-                  child: const Text('Create Account'),
+                  onPressed: (_agreedToTerms && !widget.isLoading)
+                      ? () => widget.onSignUp?.call(
+                          _emailController.text.trim(),
+                          _passwordController.text,
+                        )
+                      : null,
+                  child: widget.isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Create Account'),
                 ),
                 const SizedBox(height: 24),
 

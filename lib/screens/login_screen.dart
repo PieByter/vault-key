@@ -9,11 +9,13 @@ class LoginScreen extends StatefulWidget {
     this.onLogin,
     this.onSignUp,
     this.onForgotPassword,
+    this.isLoading = false,
   });
 
-  final VoidCallback? onLogin;
+  final void Function(String email, String password)? onLogin;
   final VoidCallback? onSignUp;
-  final VoidCallback? onForgotPassword;
+  final void Function(String email)? onForgotPassword;
+  final bool isLoading;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -121,7 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: widget.onForgotPassword,
+                                  onPressed: () => widget.onForgotPassword
+                                      ?.call(_emailController.text.trim()),
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
@@ -151,9 +154,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Primary CTA
                         ElevatedButton.icon(
-                          onPressed: widget.onLogin,
-                          icon: const Icon(Icons.login, size: 20),
-                          label: const Text('Log In'),
+                          onPressed: widget.isLoading
+                              ? null
+                              : () => widget.onLogin?.call(
+                                  _emailController.text.trim(),
+                                  _passwordController.text,
+                                ),
+                          icon: widget.isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.login, size: 20),
+                          label: Text(
+                            widget.isLoading ? 'Logging in...' : 'Log In',
+                          ),
                         ),
                         const SizedBox(height: 16),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../widgets/vault_input.dart';
 import '../widgets/strength_bar.dart';
@@ -6,16 +7,22 @@ import '../widgets/totp_timer.dart';
 import 'password_generator_screen.dart';
 
 /// Add/Edit password screen with sections for credentials and metadata.
-class AddEditPasswordScreen extends StatefulWidget {
-  const AddEditPasswordScreen({super.key, this.isEditing = false});
+class AddEditPasswordScreen extends ConsumerStatefulWidget {
+  const AddEditPasswordScreen({
+    super.key,
+    this.isEditing = false,
+    this.credentialId,
+  });
 
   final bool isEditing;
+  final String? credentialId;
 
   @override
-  State<AddEditPasswordScreen> createState() => _AddEditPasswordScreenState();
+  ConsumerState<AddEditPasswordScreen> createState() =>
+      _AddEditPasswordScreenState();
 }
 
-class _AddEditPasswordScreenState extends State<AddEditPasswordScreen> {
+class _AddEditPasswordScreenState extends ConsumerState<AddEditPasswordScreen> {
   final _itemNameController = TextEditingController(
     text: 'Acme Corp Dashboard',
   );

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../models/credential.dart';
+import '../providers/providers.dart';
 import '../widgets/vault_app_bar.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/credential_card.dart';
+import 'add_edit_password_screen.dart';
 
 /// Main vault home with search, categories, and credential list.
-class VaultHomeScreen extends StatefulWidget {
+class VaultHomeScreen extends ConsumerStatefulWidget {
   const VaultHomeScreen({super.key});
 
   @override
-  State<VaultHomeScreen> createState() => _VaultHomeScreenState();
+  ConsumerState<VaultHomeScreen> createState() => _VaultHomeScreenState();
 }
 
-class _VaultHomeScreenState extends State<VaultHomeScreen> {
+class _VaultHomeScreenState extends ConsumerState<VaultHomeScreen> {
   final _searchController = TextEditingController();
   int _selectedCategory = 0;
 
@@ -33,6 +37,12 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final credentials = ref.watch(filteredCredentialsProvider);
+    final notifier = ref.read(appStateProvider.notifier);
+
+    // Split into pinned (favorited) and rest
+    final pinned = credentials.where((c) => c.isFavorite).toList();
+    final all = credentials.where((c) => !c.isFavorite).toList();
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -74,6 +84,15 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
                           Icons.search,
                           color: AppTheme.onSurfaceVariant,
                         ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear, size: 18),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  notifier.searchCredentials('');
+                                },
+                              )
+                            : null,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -83,6 +102,7 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
                           vertical: 12,
                         ),
                       ),
+                      onChanged: (q) => notifier.searchCredentials(q),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -124,98 +144,116 @@ class _VaultHomeScreenState extends State<VaultHomeScreen> {
             ),
           ),
 
-          // Section header: Pinned
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Pinned',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppTheme.onSurfaceVariant,
+          // Pinned section
+          if (pinned.isNotEmpty) ...[
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Pinned',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: AppTheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
-          ),
-
-          // Pinned credentials
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                CredentialCard(
-                  icon: Icons.code,
-                  title: 'GitHub / Enterprise',
-                  subtitle: 'dev_ops_admin',
-                  iconColor: AppTheme.primary,
-                  onCopy: () {},
-                  onMore: () {},
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _buildCard(pinned[index], notifier),
+                  ),
+                  childCount: pinned.length,
                 ),
-                const SizedBox(height: 8),
-                CredentialCard(
-                  icon: Icons.mail_outline,
-                  title: 'Gmail',
-                  subtitle: 'j.doe@gmail.com',
-                  iconColor: const Color(0xFFEA4335),
-                  onCopy: () {},
-                  onMore: () {},
-                ),
-              ]),
+              ),
             ),
-          ),
+          ],
 
-          // Section header: All Accounts
+          // All Accounts section
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
             sliver: SliverToBoxAdapter(
-              child: Text(
-                'All Accounts',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppTheme.onSurfaceVariant,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    'All Accounts',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: AppTheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${all.length} items',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: AppTheme.outline,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-
-          // All credentials
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                CredentialCard(
-                  icon: Icons.language,
-                  title: 'Acme Corp Dashboard',
-                  subtitle: 'j.doe@acmecorp.com',
-                  iconColor: AppTheme.tertiary,
-                  onCopy: () {},
-                  onMore: () {},
-                ),
-                const SizedBox(height: 8),
-                CredentialCard(
-                  icon: Icons.credit_card,
-                  title: 'Visa •••• 4242',
-                  subtitle: 'Expires 12/26',
-                  iconColor: AppTheme.secondary,
-                  onCopy: () {},
-                  onMore: () {},
-                ),
-                const SizedBox(height: 8),
-                CredentialCard(
-                  icon: Icons.note_alt_outlined,
-                  title: 'WiFi Password',
-                  subtitle: 'Home Network',
-                  iconColor: AppTheme.onSurfaceVariant,
-                  onCopy: () {},
-                  onMore: () {},
-                ),
-              ]),
-            ),
+            sliver: credentials.isEmpty
+                ? const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(48),
+                        child: Text(
+                          'No credentials yet.\nTap + to add your first one.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _buildCard(all[index], notifier),
+                      ),
+                      childCount: all.length,
+                    ),
+                  ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
+    );
+  }
+
+  Widget _buildCard(Credential cred, dynamic notifier) {
+    final iconData = switch (cred.type) {
+      CredentialType.login => Icons.language,
+      CredentialType.card => Icons.credit_card,
+      CredentialType.note => Icons.note_alt_outlined,
+      CredentialType.identity => Icons.person_outline,
+    };
+
+    final iconColor = switch (cred.type) {
+      CredentialType.login => AppTheme.tertiary,
+      CredentialType.card => AppTheme.secondary,
+      CredentialType.note => AppTheme.onSurfaceVariant,
+      CredentialType.identity => AppTheme.primary,
+    };
+
+    return CredentialCard(
+      icon: iconData,
+      title: cred.name,
+      subtitle: cred.username,
+      iconColor: iconColor,
+      onCopy: () {},
+      onMore: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                AddEditPasswordScreen(isEditing: true, credentialId: cred.id),
+          ),
+        );
+      },
     );
   }
 }

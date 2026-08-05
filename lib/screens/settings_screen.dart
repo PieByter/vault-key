@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../providers/providers.dart';
 
 /// Settings screen for VaultKey.
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _biometricUnlock = true;
-  bool _clipboardClear = true;
-  double _autoLockMinutes = 5;
-
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = ref.watch(appStateProvider);
+    final notifier = ref.read(appStateProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -43,27 +43,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _SwitchTile(
                   icon: Icons.fingerprint,
                   label: 'Biometric Unlock',
-                  value: _biometricUnlock,
-                  onChanged: (v) => setState(() => _biometricUnlock = v),
+                  value: state.biometricEnabled,
+                  onChanged: (v) => notifier.setBiometricEnabled(v),
                 ),
                 const Divider(color: AppTheme.outlineVariant, height: 1),
                 _SwitchTile(
                   icon: Icons.content_paste_off_outlined,
                   label: 'Clear Clipboard',
                   subtitle: 'Auto-clear after 30 seconds',
-                  value: _clipboardClear,
-                  onChanged: (v) => setState(() => _clipboardClear = v),
+                  value: state.clipboardClear,
+                  onChanged: (v) => notifier.setClipboardClearEnabled(v),
                 ),
                 const Divider(color: AppTheme.outlineVariant, height: 1),
                 _SliderTile(
                   icon: Icons.lock_clock_outlined,
                   label: 'Auto-Lock',
-                  value: _autoLockMinutes,
+                  value: state.autoLockMinutes.toDouble(),
                   min: 1,
                   max: 30,
                   divisions: 29,
                   labelFormatter: (v) => '${v.round()} min',
-                  onChanged: (v) => setState(() => _autoLockMinutes = v),
+                  onChanged: (v) => notifier.setAutoLockMinutes(v.round()),
                 ),
               ],
             ),
@@ -112,6 +112,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.help_outline,
                   label: 'Help & Support',
                   onTap: () {},
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _SectionHeader('Account'),
+            _SettingsCard(
+              children: [
+                _ActionTile(
+                  icon: Icons.sync,
+                  label: 'Sync Now',
+                  subtitle: state.isSyncing
+                      ? 'Syncing...'
+                      : 'Last sync: just now',
+                  onTap: () => notifier.manualSync(),
+                ),
+                const Divider(color: AppTheme.outlineVariant, height: 1),
+                _ActionTile(
+                  icon: Icons.logout,
+                  label: 'Log Out',
+                  iconColor: AppTheme.error,
+                  labelColor: AppTheme.error,
+                  onTap: () => notifier.logOut(),
                 ),
               ],
             ),
@@ -285,6 +307,7 @@ class _ActionTile extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.labelColor,
+    this.subtitle,
   });
 
   final IconData icon;
@@ -292,6 +315,7 @@ class _ActionTile extends StatelessWidget {
   final VoidCallback onTap;
   final Color? iconColor;
   final Color? labelColor;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -310,6 +334,14 @@ class _ActionTile extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
       ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.onSurfaceVariant,
+              ),
+            )
+          : null,
       trailing: Icon(
         Icons.chevron_right,
         color: AppTheme.onSurfaceVariant,

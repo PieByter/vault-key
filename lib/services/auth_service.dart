@@ -1,0 +1,185 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+
+import 'encryption_service.dart';
+import 'database_service.dart';
+import 'firebase_service.dart';
+
+/// Orchestrates authentication flow across Firebase, encryption, and local storage.
+///
+/// Key flows:
+/// 1. Sign Up → Firebase Auth creates user → generate master key → store in secure storage
+/// 2. Log In → Firebase Auth verifies → load master key from secure storage → verify
+/// 3. Unlock → biometric or master password → load master key into memory
+/// 4. Log Out → clear master key from secure storage
+class AuthService {
+  final FirebaseService _firebase;
+  final EncryptionService _encryption;
+  final DatabaseService _database;
+
+  AuthService({
+    required FirebaseService firebase,
+    required EncryptionService encryption,
+    required DatabaseService database,
+  }) : _firebase = firebase,
+       _encryption = encryption,
+       _database = database;
+
+  // ── State ────────────────────────────────────────────────────────────────
+
+  /// Whether a user is currently authenticated with Firebase.
+  bool get isLoggedIn => _firebase.currentUser != null;
+
+  /// The current Firebase user.
+  User? get currentUser => _firebase.currentUser;
+
+  /// Stream of auth state changes.
+  Stream<User?> get authStateChanges => _firebase.authStateChanges;
+
+  // ── Sign Up ──────────────────────────────────────────────────────────────
+
+  /// Create new account: Firebase Auth + generate encryption key.
+  /// Returns the Firebase [User] on success.
+  Future<User> signUp(String email, String password) async {
+    final credential = await _firebase.signUp(email, password);
+    final user = credential.user!;
+
+    // Generate and store the master encryption key
+    await _encryption.generateAndStoreMasterKey();
+
+    // Initialize default categories
+    final defaults = _defaultCategories(user.uid);
+    await _database.saveCategories(user.uid, defaults);
+
+    debugPrint('✅ VaultKey: Sign-up complete for ${user.email}');
+    return user;
+  }
+
+  // ── Log In ───────────────────────────────────────────────────────────────
+
+  /// Log in: Firebase Auth + verify master key exists.
+  Future<User> logIn(String email, String password) async {
+    final credential = await _firebase.signIn(email, password);
+    final user = credential.user!;
+
+    // Verify the master key is still in secure storage
+    final key = await _encryption.loadMasterKey();
+    if (key == null) {
+      // Key lost — user needs to re-generate (data would be unreadable anyway)
+      throw AuthException(
+        'Encryption key not found. If you reinstalled the app, '
+        'your vault data cannot be recovered without a backup.',
+      );
+    }
+
+    final valid = await _encryption.verifyMasterKey(key);
+    if (!valid) {
+      throw AuthException('Master key verification failed.');
+    }
+
+    debugPrint('✅ VaultKey: Login complete for ${user.email}');
+    return user;
+  }
+
+  // ── Log Out ──────────────────────────────────────────────────────────────
+
+  Future<void> logOut() async {
+    await _encryption.clearMasterKey();
+    await _firebase.signOut();
+    debugPrint('✅ VaultKey: Logged out');
+  }
+
+  // ── Unlock (after login, biometric, or timeout) ──────────────────────────
+
+  /// Unlock the vault: load master key into memory.
+  /// Returns the loaded key for use in the current session.
+  Future<UnlockResult> unlock() async {
+    final key = await _encryption.loadMasterKey();
+    if (key == null) {
+      return UnlockResult(keyMissing: true);
+    }
+    final valid = await _encryption.verifyMasterKey(key);
+    if (!valid) {
+      return UnlockResult(keyInvalid: true);
+    }
+    return UnlockResult(success: true, key: key);
+  }
+
+  // ── Password Reset ───────────────────────────────────────────────────────
+
+  Future<void> sendPasswordReset(String email) async {
+    await _firebase.sendPasswordResetEmail(email);
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  List<Map<String, dynamic>> _defaultCategories(String userId) {
+    final now = DateTime.now().toIso8601String();
+    return [
+      {
+        'id': 'sys_logins',
+        'userId': userId,
+        'name': 'Logins',
+        'icon': 'key',
+        'sortOrder': 0,
+        'isSystem': true,
+        'createdAt': now,
+        'updatedAt': now,
+      },
+      {
+        'id': 'sys_cards',
+        'userId': userId,
+        'name': 'Cards',
+        'icon': 'credit_card',
+        'sortOrder': 1,
+        'isSystem': true,
+        'createdAt': now,
+        'updatedAt': now,
+      },
+      {
+        'id': 'sys_notes',
+        'userId': userId,
+        'name': 'Secure Notes',
+        'icon': 'note',
+        'sortOrder': 2,
+        'isSystem': true,
+        'createdAt': now,
+        'updatedAt': now,
+      },
+      {
+        'id': 'sys_identity',
+        'userId': userId,
+        'name': 'Identity',
+        'icon': 'person',
+        'sortOrder': 3,
+        'isSystem': true,
+        'createdAt': now,
+        'updatedAt': now,
+      },
+    ];
+  }
+}
+
+/// Result of an unlock attempt.
+class UnlockResult {
+  final bool success;
+  final bool keyMissing;
+  final bool keyInvalid;
+  final dynamic key; // enc.Key — kept as dynamic to avoid coupling
+
+  const UnlockResult({
+    this.success = false,
+    this.keyMissing = false,
+    this.keyInvalid = false,
+    this.key,
+  });
+}
+
+/// Auth-related exceptions.
+class AuthException implements Exception {
+  final String message;
+  const AuthException(this.message);
+
+  @override
+  String toString() => 'AuthException: $message';
+}
